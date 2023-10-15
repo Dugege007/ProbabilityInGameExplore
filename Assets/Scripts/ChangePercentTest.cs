@@ -37,7 +37,7 @@ public class ChangePercentTest : MonoBehaviour
     {
         float totalWeight = GetTotalWeight(SampleSpaceDic);
         float currentWeight = SampleSpaceDic[outcome];
-        float weightAdjustment = (targetPercent * totalWeight - currentWeight) / 1 - targetPercent;
+        float weightAdjustment = (targetPercent * totalWeight - currentWeight) / (1 - targetPercent);
 
         SampleSpaceDic[outcome] = currentWeight + weightAdjustment;
     }
@@ -75,7 +75,7 @@ public class ChangePercentTest : MonoBehaviour
     }
 
     // 生成各情况的滑动条
-    private void GenerateSliderBar()
+    private void GenerateSliderBar(Dictionary<string, float> sampleSpaceDic)
     {
 
     }
