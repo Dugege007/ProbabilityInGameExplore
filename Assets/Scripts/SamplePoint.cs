@@ -13,9 +13,11 @@ namespace ProbabilityTest
             get { return mValue; }
             set { mValue = Mathf.Clamp(value, 0, 10000f); }
         }
+
         // 锁定
         public bool IsLocked;
-        //TODO 关联
+        // 关联
+        public bool IsRelated;
 
         public SamplePoint(string name, float value = 0, bool isLocked = false)
         {

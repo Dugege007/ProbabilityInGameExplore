@@ -13,6 +13,8 @@ namespace ProbabilityTest
         public Slider CasePercentSlider;
         public Text CasePercentText;
         public InputField CustomPercentInputField;
+        public Toggle IsLockedToggle;
+        public Toggle IsRelatedToggle;
 
         private bool isRefreshing = false;
 
@@ -62,32 +64,39 @@ namespace ProbabilityTest
                 newCase.name = pointName;
                 newCase.SetActive(true);
 
-                Text caseNameText = newCase.transform.Find("CaseNameText").GetComponent<Text>();
-                Slider casePercentSlider = newCase.transform.GetComponent<Slider>();
-                Text casePercentText = newCase.transform.Find("CasePercentText").GetComponent<Text>();
-                InputField customPercentInputField = casePercentText.transform.Find("CustomPercentInputField").GetComponent<InputField>();
-
-                caseNameText.text = pointName;
-
+                Slider casePercentSlider = newCase.transform.Find("CasePercentSlider").GetComponent<Slider>();
                 casePercentSlider.value = percent;
                 casePercentSlider.onValueChanged.AddListener(delegate { OnSliderValueChanged(pointName, casePercentSlider); });
 
+                Text caseNameText = casePercentSlider.transform.Find("CaseNameText").GetComponent<Text>();
+                caseNameText.text = pointName;
+
+                Text casePercentText = casePercentSlider.transform.Find("CasePercentText").GetComponent<Text>();
                 casePercentText.text = (percent * 100).ToString("F2") + "%";
 
-                customPercentInputField.onEndEdit.AddListener(delegate { AdjustPercentInputField(pointName, customPercentInputField); });
+                InputField customPercentInputField = casePercentText.transform.Find("CustomPercentInputField").GetComponent<InputField>();
+                customPercentInputField.onEndEdit.AddListener(delegate { AdjustPercentByInputField(pointName, customPercentInputField); });
 
-                CaseObjects.Add(pointName, newCase);
+                Toggle isLockedToggle = customPercentInputField.transform.Find("IsLockedToggle").GetComponent<Toggle>();
+                isLockedToggle.isOn = point.IsLocked;
+                isLockedToggle.onValueChanged.AddListener(isOn => point.IsLocked = isOn);
+
+                Toggle isRelatedToggle = customPercentInputField.transform.Find("IsRelatedToggle").GetComponent<Toggle>();
+                isRelatedToggle.isOn = point.IsRelated;
+                isLockedToggle.onValueChanged.AddListener(isOn => point.IsRelated = isOn);
+
+                CaseObjects.Add(pointName, casePercentSlider.gameObject);
             }
         }
 
         // 按输入框中的值调整权重
-        private void AdjustPercentInputField(string outname, InputField inputField)
+        private void AdjustPercentByInputField(string outname, InputField inputField)
         {
             SamplePoint samplePoint = DiceSampleSpace.GetSamplePointByName(outname);
 
             if (float.TryParse(inputField.text, out float targetPercent))
             {
-                targetPercent = Mathf.Clamp(targetPercent / 100f, 0.001f, 0.999f);  // 限制值在0.001到0.999之间
+                targetPercent = Mathf.Clamp(targetPercent / 100f, 0.0001f, 0.9999f);  // 限制值在0.001到0.999之间
 
                 if (DiceSampleSpace.UseWeight)
                     samplePoint.AdjustWeight(DiceSampleSpace.GetTotalWeight(), targetPercent);
@@ -104,7 +113,7 @@ namespace ProbabilityTest
             if (isRefreshing) return;   // 检查是否正在刷新
 
             SamplePoint samplePoint = DiceSampleSpace.GetSamplePointByName(outname);
-            float newPercent = Mathf.Clamp(slider.value, 0.001f, 0.999f);  // 限制值在0.001到0.999之间
+            float newPercent = Mathf.Clamp(slider.value, 0.0001f, 0.9999f);  // 限制值在0.001到0.999之间
 
             if (DiceSampleSpace.UseWeight)
                 samplePoint.AdjustWeight(DiceSampleSpace.GetTotalWeight(), newPercent);
