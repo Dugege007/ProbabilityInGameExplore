@@ -15,6 +15,7 @@ namespace ProbabilityTest
         public InputField CustomPercentInputField;
         public Toggle IsLockedToggle;
         public Toggle IsRelatedToggle;
+        public Dropdown ModeDropdown;
 
         private bool isRefreshing = false;
 
@@ -23,7 +24,7 @@ namespace ProbabilityTest
         { "Face1", "Face2", "Face3", "Face4", "Face5", "Face6" };
 
         // 样本空间
-        private SampleSpace DiceSampleSpace = new SampleSpace("DiceEvents");
+        private SampleSpace DiceSampleSpace = new SampleSpace("DiceEvents", CalMode.Weight);
 
         // 存放生成的Slider对象
         private Dictionary<string, GameObject> CaseObjects = new Dictionary<string, GameObject>();
@@ -35,21 +36,22 @@ namespace ProbabilityTest
                 DiceSampleSpace.AddSamplePoint(DiceFaces[i]);
             }
 
-            //for (int i = 0; i < DiceSampleSpace.SamplePoints.Count; i++)
-            //{
-            //    Debug.Log("样本点：" + DiceFaces[i] + "；" + "值：" + DiceSampleSpace.SamplePoints[i].Value);
-            //}
-
             DiceSampleSpace.ResetAllSamplePoints();
 
-            //for (int i = 0; i < DiceSampleSpace.SamplePoints.Count; i++)
-            //{
-            //    Debug.Log("样本点：" + DiceFaces[i] + "；" + "值：" + DiceSampleSpace.SamplePoints[i].Value);
-            //}
+            // 初始化Dropdown
+            ModeDropdown.ClearOptions();
+            List<string> options = new List<string> { "按概率", "按权重" };
+            ModeDropdown.AddOptions(options);
 
-            Debug.Log("是否使用权重：" + DiceSampleSpace.UseWeight);
+            // 设置初始选项
+            ModeDropdown.value = (DiceSampleSpace.Mode == CalMode.Percent) ? 0 : 1;
+
+            // 添加监听器
+            ModeDropdown.onValueChanged.AddListener(OnCalModeChanged);
+            Debug.Log("计算模式：" + DiceSampleSpace.Mode);
 
             GenerateSliderBar(DiceSampleSpace);
+            RefreshSliders(DiceSampleSpace);
         }
 
         // 生成各情况的滑动条
@@ -94,14 +96,18 @@ namespace ProbabilityTest
         {
             SamplePoint samplePoint = DiceSampleSpace.GetSamplePointByName(outname);
 
-            if (float.TryParse(inputField.text, out float targetPercent))
+            if (float.TryParse(inputField.text, out float targetValue))
             {
-                targetPercent = Mathf.Clamp(targetPercent / 100f, 0.0001f, 0.9999f);  // 限制值在0.001到0.999之间
-
-                if (DiceSampleSpace.UseWeight)
-                    samplePoint.AdjustWeight(DiceSampleSpace.GetTotalWeight(), targetPercent);
+                if (DiceSampleSpace.Mode == CalMode.Percent)
+                {
+                    targetValue = Mathf.Clamp(targetValue / 100f, 0.0001f, 0.9999f);  // 限制值在0.0001到0.9999之间
+                    DiceSampleSpace.AdjustPercent(samplePoint, targetValue);
+                }
                 else
-                    DiceSampleSpace.AdjustPercent(samplePoint, targetPercent);
+                {
+                    targetValue = Mathf.Clamp(targetValue, 0, 10000f);
+                    DiceSampleSpace.AdjustWeight(samplePoint, targetValue);
+                }
 
                 RefreshSliders(DiceSampleSpace);
             }
@@ -113,12 +119,18 @@ namespace ProbabilityTest
             if (isRefreshing) return;   // 检查是否正在刷新
 
             SamplePoint samplePoint = DiceSampleSpace.GetSamplePointByName(outname);
-            float newPercent = Mathf.Clamp(slider.value, 0.0001f, 0.9999f);  // 限制值在0.001到0.999之间
+            float newValue;
 
-            if (DiceSampleSpace.UseWeight)
-                samplePoint.AdjustWeight(DiceSampleSpace.GetTotalWeight(), newPercent);
+            if (DiceSampleSpace.Mode == CalMode.Percent)
+            {
+                newValue = Mathf.Clamp(slider.value, 0.0001f, 0.9999f);  // 限制值在0.0001到0.9999之间
+                DiceSampleSpace.AdjustPercent(samplePoint, newValue);
+            }
             else
-                DiceSampleSpace.AdjustPercent(samplePoint, newPercent);
+            {
+                newValue = Mathf.Clamp(samplePoint.AdjustPercentByWeight(DiceSampleSpace.GetTotalWeight(), slider.value), 0, 10000f);
+                DiceSampleSpace.AdjustWeight(samplePoint, newValue);
+            }
 
             RefreshSliders(DiceSampleSpace);
         }
@@ -127,20 +139,66 @@ namespace ProbabilityTest
         private void RefreshSliders(SampleSpace sampleSpace)
         {
             isRefreshing = true;  // 设置标记为true
+            float percent;
 
-            foreach (SamplePoint point in sampleSpace.SamplePoints)
+            if (DiceSampleSpace.Mode == CalMode.Percent)
             {
-                float percent = point.Value;
+                foreach (SamplePoint point in sampleSpace.SamplePoints)
+                {
+                    percent = point.Value;
 
-                GameObject caseObj = CaseObjects[point.Name];
-                Text casePercentText = caseObj.transform.Find("CasePercentText").GetComponent<Text>();
-                Slider casePercentSlider = caseObj.GetComponent<Slider>();  // 获取Slider组件
+                    GameObject caseObj = CaseObjects[point.Name];
+                    Slider casePercentSlider = caseObj.GetComponent<Slider>();  // 获取Slider组件
+                    Text casePercentText = caseObj.transform.Find("CasePercentText").GetComponent<Text>();
+                    InputField customPercentInputField = casePercentText.transform.Find("CustomPercentInputField").GetComponent<InputField>();
 
-                casePercentText.text = (percent * 100).ToString("F2") + "%";
-                casePercentSlider.value = percent;  // 更新Slider的值
+                    casePercentSlider.value = percent;  // 更新Slider的值
+                    casePercentText.text = (percent * 100).ToString("F2") + "%";
+                    customPercentInputField.text = (percent * 100).ToString("F2");
+                }
+            }
+            else
+            {
+                float totalWeight = sampleSpace.GetTotalWeight();
+                if (totalWeight > 0)
+                {
+                    foreach (SamplePoint point in sampleSpace.SamplePoints)
+                    {
+                        percent = point.Value / totalWeight;
+
+                        GameObject caseObj = CaseObjects[point.Name];
+                        Slider casePercentSlider = caseObj.GetComponent<Slider>();  // 获取Slider组件
+                        Text casePercentText = caseObj.transform.Find("CasePercentText").GetComponent<Text>();
+                        InputField customPercentInputField = casePercentText.transform.Find("CustomPercentInputField").GetComponent<InputField>();
+
+                        casePercentSlider.value = percent;  // 更新Slider的值
+                        casePercentText.text = (percent * 100).ToString("F2") + "%";
+                        customPercentInputField.text = point.Value.ToString();
+                    }
+                }
+                else
+                {
+                    Debug.LogWarning("总权重值错误，无法计算！");
+                }
             }
 
             isRefreshing = false;  // 设置标记为false
+        }
+
+        // 监听 Dropdown 以切换模式
+        private void OnCalModeChanged(int selectedIndex)
+        {
+            if (selectedIndex == 0)
+            {
+                DiceSampleSpace.WeightToPercent();
+            }
+            else if (selectedIndex == 1)
+            {
+                DiceSampleSpace.PercentToWeight();
+            }
+
+            // 刷新滑动条和其他UI元素
+            RefreshSliders(DiceSampleSpace);
         }
     }
 }

@@ -4,17 +4,23 @@ using UnityEngine;
 
 namespace ProbabilityTest
 {
+    public enum CalMode
+    {
+        Percent,
+        Weight,
+    }
+
     public class SampleSpace
     {
         public string Name;
         public List<SamplePoint> SamplePoints = new List<SamplePoint>();
-        // 是否使用权重
-        public bool UseWeight = false;
 
-        public SampleSpace(string name = "DefaultSampleSpace", bool useWeight = false)
+        public CalMode Mode = CalMode.Percent;
+
+        public SampleSpace(string name = "DefaultSampleSpace", CalMode mode = CalMode.Percent)
         {
             Name = name;
-            UseWeight = useWeight;
+            Mode = mode;
         }
 
         /// <summary>
@@ -29,15 +35,20 @@ namespace ProbabilityTest
                 return;
             }
 
-            SamplePoint samplePoint;
-            if (UseWeight)
+            switch (Mode)
             {
-                samplePoint = new SamplePoint(samplePointName, 1f);
-                SamplePoints.Add(samplePoint);
-            }
-            else
-            {
-                AddSamplePoint(samplePointName, 0f);
+                case CalMode.Percent:
+                    AddSamplePoint(samplePointName, 0f);
+                    break;
+
+                case CalMode.Weight:
+                    SamplePoint samplePoint = new SamplePoint(samplePointName, 1f);
+                    SamplePoints.Add(samplePoint);
+                    break;
+
+                default:
+                    Debug.LogWarning("添加失败！");
+                    break;
             }
         }
 
@@ -55,12 +66,23 @@ namespace ProbabilityTest
             }
 
             SamplePoint samplePoint;
-            if (UseWeight)
-                samplePoint = new SamplePoint(samplePointName, Mathf.Clamp(value, 1f, 10000f));
-            else
-                samplePoint = new SamplePoint(samplePointName, Mathf.Clamp01(value));
+            switch (Mode)
+            {
+                case CalMode.Percent:
+                    samplePoint = new SamplePoint(samplePointName, Mathf.Clamp01(value));
+                    SamplePoints.Add(samplePoint);
+                    break;
 
-            SamplePoints.Add(samplePoint);
+                case CalMode.Weight:
+                    samplePoint = new SamplePoint(samplePointName, Mathf.Clamp(value, 1f, 10000f));
+                    SamplePoints.Add(samplePoint);
+                    break;
+
+                default:
+                    Debug.LogWarning("添加失败！");
+                    break;
+            }
+
         }
 
         /// <summary>
@@ -118,8 +140,7 @@ namespace ProbabilityTest
                     continue;
                 }
                 // 按比例调整其他的百分比
-                float newPercent = (point.Value / totalOtherPercent) * newPotalOtherPercent;
-                point.Value = newPercent;
+                point.Value = (point.Value / totalOtherPercent) * newPotalOtherPercent;
             }
         }
 
@@ -157,6 +178,21 @@ namespace ProbabilityTest
                 float newPercent = (point.Value / totalOtherPercent) * newPotalOtherPercent;
                 point.Value = newPercent;
             }
+        }
+
+        /// <summary>
+        /// 按目标权重调整权重
+        /// </summary>
+        /// <param name="samplePoint">样本点</param>
+        /// <param name="targetWeight">目标权重</param>
+        public void AdjustWeight(SamplePoint samplePoint, float targetWeight)
+        {
+            targetWeight = Mathf.Clamp(targetWeight, 0, 10000f);
+
+            float weightAdjustment = targetWeight - samplePoint.Value;
+            //Debug.Log("权重需调整的值：" + weightAdjustment);
+
+            samplePoint.Value = targetWeight;
         }
 
         /// <summary>
@@ -208,16 +244,16 @@ namespace ProbabilityTest
             {
                 totalWeight += point.Value;
             }
-
+            //Debug.Log("GetTotalWeight() return " + totalWeight);
             return totalWeight;
         }
 
         /// <summary>
-        /// 权重值 转 概率
+        /// 权重 转 概率
         /// </summary>
         public void WeightToPercent()
         {
-            UseWeight = false;
+            Mode = CalMode.Percent;
 
             float totalWeight = GetTotalWeight();
             if (totalWeight > 0)
@@ -225,15 +261,29 @@ namespace ProbabilityTest
                     point.Value /= totalWeight;
         }
 
+        public void PercentToWeight()
+        {
+            Mode = CalMode.Weight;
+        }
+
         /// <summary>
         /// 将样本点置零
         /// </summary>
         public void SetSamplePointToZero(SamplePoint samplePoint)
         {
-            if (UseWeight)
-                WeightToPercent();
+            switch (Mode)
+            {
+                case CalMode.Percent:
+                    AdjustPercent(samplePoint, 0);
+                    break;
 
-            AdjustPercent(samplePoint, 0);
+                case CalMode.Weight:
+                    AdjustWeight(samplePoint, 0);
+                    break;
+
+                default:
+                    break;
+            }
         }
 
         /// <summary>
@@ -245,12 +295,21 @@ namespace ProbabilityTest
             float targetPercent = 1f / amount;
             Debug.Log("所有 SamplePoint 的值重置为：" + targetPercent);
 
-            if (UseWeight)
-                foreach (SamplePoint point in SamplePoints.Where(p => !p.IsLocked && !p.IsLocked))
-                    point.Value = 1f;
-            else
-                foreach (SamplePoint point in SamplePoints.Where(p => !p.IsLocked && !p.IsLocked))
-                    point.Value = targetPercent;
+            switch (Mode)
+            {
+                case CalMode.Percent:
+                    foreach (SamplePoint point in SamplePoints.Where(p => !p.IsLocked && !p.IsLocked))
+                        point.Value = targetPercent;
+                    break;
+
+                case CalMode.Weight:
+                    foreach (SamplePoint point in SamplePoints.Where(p => !p.IsLocked && !p.IsLocked))
+                        point.Value = 1f;
+                    break;
+
+                default:
+                    break;
+            }
         }
     }
 }

@@ -35,19 +35,22 @@ namespace ProbabilityTest
         /// </summary>
         /// <param name="targetPercent">目标概率</param>
         /// <remark>此方法无需关注样本空间中其他样本点，但需要注意数据溢出</remark>
-        public void AdjustWeight(float totalWeight, float targetPercent)
+        public float AdjustPercentByWeight(float totalWeight, float targetPercent)
         {
-            if (1 - targetPercent <= 0.00001f)
-            {
-                Debug.LogError("targetPercent 不能是 1");
-                return;
-            }
+            targetPercent = Mathf.Clamp(targetPercent, 0, 10000f);
 
-            float currentWeight = mValue;
+            //if (1 - targetPercent <= 0.0001f)
+            //{
+            //    Debug.LogError("targetPercent 不能是 1");
+            //    return 0;
+            //}
+
+            float currentWeight = Value;
             float weightAdjustment = (targetPercent * totalWeight - currentWeight) / (1 - targetPercent);
-            Debug.Log("权重需调整的值：" + weightAdjustment);
+            //Debug.Log("权重需调整的值：" + weightAdjustment);
 
-            mValue = currentWeight + weightAdjustment;
+            Value = currentWeight + weightAdjustment;
+            return Value;
         }
 
         /// <summary>
@@ -57,7 +60,7 @@ namespace ProbabilityTest
         /// <remark>此方法无需关注样本空间中其他样本点，但需要注意数据溢出</remark>
         private void AdjustWeightByRate(float rate)
         {
-            mValue *= rate;
+            Value *= rate;
         }
     }
 }
