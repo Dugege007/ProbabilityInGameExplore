@@ -18,7 +18,10 @@ namespace ProbabilityTest
             // please add init code here
 
             FocusInputFieldTemplete.Hide();
-            // 先创建一个关注点输入框
+
+            // 展示之前输入的信息
+            SetInfoText();
+            // 创建一个关注点输入框
             CreateFocusInputField();
 
             AddFocusBtn.onClick.AddListener(() =>
@@ -41,9 +44,28 @@ namespace ProbabilityTest
         {
         }
 
+        private void SetInfoText()
+        {
+            string subjectNameStr = Global.SubjectName + "\r\n\r\n";
+            string optionsListStr = "";
+
+            for (int i = 0; i < Global.OptionList.Count; i++)
+            {
+                optionsListStr += (i + 1).ToString() + ". " + Global.OptionList[i] + "\r\n";
+            }
+
+            InfoText.text = "<b><size=42>主题：</size></b>\r\n" +
+                subjectNameStr +
+                "<b><size=42>选项：</size></b>\r\n" +
+                optionsListStr +
+                " ";
+        }
+
         private void CreateFocusInputField()
         {
             mFocusCount++;
+            Global.FocusList.Add("");
+            int index = mFocusCount - 1;
 
             FocusInputFieldTemplete.InstantiateWithParent(Content)
                 .SiblingIndex(Content.childCount - 3)
@@ -51,6 +73,11 @@ namespace ProbabilityTest
                 {
                     TMP_Text label = self.transform.Find("TextArea").Find("Label").GetComponent<TMP_Text>();
                     label.text = "关注点 " + mFocusCount;
+
+                    self.onEndEdit.AddListener(focus =>
+                    {
+                        Global.FocusList[index] = focus;
+                    });
                 })
                 .Show();
         }

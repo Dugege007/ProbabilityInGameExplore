@@ -19,6 +19,11 @@ namespace ProbabilityTest
 
             OptionInputFieldTemplete.Hide();
 
+            SubjectInputField.onEndEdit.AddListener(subject =>
+            {
+                Global.SubjectName = subject;
+            });
+
             AddOptionBtn.onClick.AddListener(() =>
             {
                 CreateOptionInputField();
@@ -42,6 +47,8 @@ namespace ProbabilityTest
         private void CreateOptionInputField()
         {
             OptionCount++;
+            Global.OptionList.Add("");
+            int index = OptionCount - 1;
 
             OptionInputFieldTemplete.InstantiateWithParent(Content)
                 .SiblingIndex(Content.childCount - 3)
@@ -49,6 +56,11 @@ namespace ProbabilityTest
                 {
                     TMP_Text label = self.transform.Find("TextArea").Find("Label").GetComponent<TMP_Text>();
                     label.text = "СЎПо " + OptionCount;
+
+                    self.onEndEdit.AddListener(option =>
+                    {
+                        Global.OptionList[index] = option;
+                    });
                 })
                 .Show();
         }

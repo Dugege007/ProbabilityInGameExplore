@@ -5,7 +5,7 @@ using QFramework;
 
 namespace ProbabilityTest
 {
-	// Generate Id:3a52ad0d-48f4-49fd-943e-7ee49126582b
+	// Generate Id:a5ae9299-524f-45f5-afd0-f4a1f7ed15b6
 	public partial class UIFocusesPanel
 	{
 		public const string Name = "UIFocusesPanel";
@@ -16,6 +16,8 @@ namespace ProbabilityTest
 		public TMPro.TextMeshProUGUI Label;
 		[SerializeField]
 		public RectTransform Content;
+		[SerializeField]
+		public TMPro.TextMeshProUGUI InfoText;
 		[SerializeField]
 		public UnityEngine.UI.Button AddFocusBtn;
 		[SerializeField]
@@ -28,6 +30,7 @@ namespace ProbabilityTest
 			FocusInputFieldTemplete = null;
 			Label = null;
 			Content = null;
+			InfoText = null;
 			AddFocusBtn = null;
 			NextBtn = null;
 			

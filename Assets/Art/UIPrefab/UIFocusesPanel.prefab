@@ -570,6 +570,7 @@ MonoBehaviour:
   FocusInputFieldTemplete: {fileID: 5120516935974126231}
   Label: {fileID: 5111103437807762795}
   Content: {fileID: 5644821881980528285}
+  InfoText: {fileID: 6766921952460497119}
   AddFocusBtn: {fileID: 6607279804683176355}
   NextBtn: {fileID: 8125375322686808840}
 --- !u!1 &1957231151566115392
@@ -936,7 +937,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0.00048823727}
   m_SizeDelta: {x: 0, y: 1800}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &4698078892181643403
@@ -1959,6 +1960,7 @@ GameObject:
   - component: {fileID: 9106193943444540696}
   - component: {fileID: 6766921952460497119}
   - component: {fileID: 5212892517496167120}
+  - component: {fileID: 3935758382848363500}
   m_Layer: 0
   m_Name: InfoText
   m_TagString: Untagged
@@ -2013,8 +2015,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "<b>\u4E3B\u9898\uFF1A</b>\n\u665A\u996D\u5403\u4EC0\u4E48\uFF1F\n\n<b>\u9009\u9879\uFF1A</b>\n1.
-    \u725B\u8089\u9762\n2. \u706B\u9505\n3. \u70E7\u70E4\n4. \u9EBB\u8FA3\u70EB"
+  m_text: "<b><size=42>\u4E3B\u9898\uFF1A</size></b>\n\u665A\u996D\u5403\u4EC0\u4E48\uFF1F\n\n<b><size=42>\u9009\u9879\uFF1A</size></b>\n1.
+    \u725B\u8089\u9762\n2. \u706B\u9505\n3. \u70E7\u70E4\n4. \u9EBB\u8FA3\u70EB\n "
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 75cd726ee99c770479af5fce5e21df84, type: 2}
   m_sharedMaterial: {fileID: 4085525013124532939, guid: 75cd726ee99c770479af5fce5e21df84, type: 2}
@@ -2097,6 +2099,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_HorizontalFit: 0
   m_VerticalFit: 2
+--- !u!114 &3935758382848363500
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7073415141341728227}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d51f3a7c41ab0346b49ae50d456bece, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MarkType: 0
+  CustomComponentName: InfoText
+  CustomComment: 
+  mComponentName: TMPro.TextMeshProUGUI
 --- !u!1 &7519986204150000029
 GameObject:
   m_ObjectHideFlags: 0
