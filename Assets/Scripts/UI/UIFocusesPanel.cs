@@ -11,37 +11,37 @@ namespace ProbabilityTest
     }
     public partial class UIFocusesPanel : UIPanel
     {
-        // 存放生成的 Slider 对象
-        private Dictionary<string, GameObject> mFocusHolderDict = new Dictionary<string, GameObject>();
-
-        // 关注点的个数
-        private int mFocusCount = 0;
-        // 是否正在刷新
-        private bool mIsRefreshing = false;
+        private int mFocusIndex = 0;
 
         protected override void OnInit(IUIData uiData = null)
         {
             mData = uiData as UIFocusesPanelData ?? new UIFocusesPanelData();
             // please add init code here
 
+            // 隐藏 关注点模板
             FocusHolderTemplete.Hide();
 
             // 给样本空间名称赋值
-            Global.SampleSpace.Name = Global.SubjectName;
+            Global.SampleSpace.Name = Global.Subject.Name;
+            Global.SampleSpace.SamplePoints.Clear();
+
             // 展示之前输入的信息
             SetInfoText();
             // 创建一个关注点输入框
             CreateFocusHolder();
 
+            // 监听 添加关注点按钮
             AddFocusBtn.onClick.AddListener(() =>
             {
                 CreateFocusHolder();
             });
 
+            // 监听 下一步按钮
             NextBtn.onClick.AddListener(() =>
             {
                 CloseSelf();
-                // 打开分析面板
+                // 打开评分面板
+                UIKit.OpenPanel<UIRatingPanel>();
             });
         }
 
@@ -53,14 +53,15 @@ namespace ProbabilityTest
         {
         }
 
+        // 设置信息
         private void SetInfoText()
         {
-            string subjectNameStr = Global.SubjectName + "\r\n\r\n";
+            string subjectNameStr = Global.Subject.Name + "\r\n\r\n";
             string optionsListStr = "";
 
-            for (int i = 0; i < Global.OptionList.Count; i++)
+            for (int i = 0; i < Global.Subject.Options.Count; i++)
             {
-                optionsListStr += (i + 1).ToString() + ". " + Global.OptionList[i] + "\r\n";
+                optionsListStr += (i + 1).ToString() + ". " + Global.Subject.Options[i].Name + "\r\n";
             }
 
             InfoText.text = "<b><size=42>主题：</size></b>\r\n" +
@@ -73,9 +74,7 @@ namespace ProbabilityTest
         // 创建关注点条目
         private void CreateFocusHolder()
         {
-            mFocusCount++;
-            int index = mFocusCount - 1;
-
+            mFocusIndex++;
             // 给样本空间添加一个关注点（样本点）
             Global.SampleSpace.AddSamplePoint("", 1f);
 
@@ -85,14 +84,14 @@ namespace ProbabilityTest
                 {
                     // 获取输入框
                     TMP_InputField inputField = self.FocusInputField;
-                    self.Label.text = "关注点 " + mFocusCount;
+                    self.Label.text = "关注点 " + mFocusIndex;
                     // 获取滑动条
                     Slider slider = self.FocusSlider;
                     slider.enabled = false;
 
                     inputField.onEndEdit.AddListener(focusName =>
                     {
-                        Global.SampleSpace.SamplePoints[index].Name = focusName;
+                        Global.SampleSpace.SamplePoints[mFocusIndex - 1].Name = focusName;
 
                         if (focusName == "")
                             slider.enabled = false;
@@ -109,7 +108,6 @@ namespace ProbabilityTest
 
         protected override void OnClose()
         {
-            mFocusCount = 0;
         }
     }
 }
