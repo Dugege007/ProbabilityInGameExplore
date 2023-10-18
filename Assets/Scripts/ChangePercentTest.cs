@@ -128,7 +128,7 @@ namespace ProbabilityTest
             }
             else
             {
-                newValue = Mathf.Clamp(samplePoint.AdjustPercentByWeight(DiceSampleSpace.GetTotalWeight(), slider.value), 0, 10000f);
+                newValue = Mathf.Clamp(samplePoint.AdjustPercentByWeight(DiceSampleSpace.TotalWeight, slider.value), 0, 10000f);
                 DiceSampleSpace.AdjustWeight(samplePoint, newValue);
             }
 
@@ -159,7 +159,7 @@ namespace ProbabilityTest
             }
             else
             {
-                float totalWeight = sampleSpace.GetTotalWeight();
+                float totalWeight = sampleSpace.TotalWeight;
                 if (totalWeight > 0)
                 {
                     foreach (SamplePoint point in sampleSpace.SamplePoints)

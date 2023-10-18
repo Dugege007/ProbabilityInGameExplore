@@ -10,7 +10,9 @@ namespace ProbabilityTest
         public static string SubjectName = "SubjectName";
         public static string SubjectDescription = "SubjectDescription";
         public static List<string> OptionList = new List<string>();
-        public static List<string> FocusList = new List<string>();
+
+        // 主题的样本空间，暂时使用权重
+        public static SampleSpace SampleSpace = new SampleSpace(SubjectName, CalMode.Weight);
 
         protected override void Init()
         {

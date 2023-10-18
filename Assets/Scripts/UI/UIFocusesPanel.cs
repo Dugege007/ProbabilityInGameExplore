@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using QFramework;
 using TMPro;
+using System.Collections.Generic;
 
 namespace ProbabilityTest
 {
@@ -10,23 +11,31 @@ namespace ProbabilityTest
     }
     public partial class UIFocusesPanel : UIPanel
     {
+        // 存放生成的 Slider 对象
+        private Dictionary<string, GameObject> mFocusHolderDict = new Dictionary<string, GameObject>();
+
+        // 关注点的个数
         private int mFocusCount = 0;
+        // 是否正在刷新
+        private bool mIsRefreshing = false;
 
         protected override void OnInit(IUIData uiData = null)
         {
             mData = uiData as UIFocusesPanelData ?? new UIFocusesPanelData();
             // please add init code here
 
-            FocusInputFieldTemplete.Hide();
+            FocusHolderTemplete.Hide();
 
+            // 给样本空间名称赋值
+            Global.SampleSpace.Name = Global.SubjectName;
             // 展示之前输入的信息
             SetInfoText();
             // 创建一个关注点输入框
-            CreateFocusInputField();
+            CreateFocusHolder();
 
             AddFocusBtn.onClick.AddListener(() =>
             {
-                CreateFocusInputField();
+                CreateFocusHolder();
             });
 
             NextBtn.onClick.AddListener(() =>
@@ -61,22 +70,34 @@ namespace ProbabilityTest
                 " ";
         }
 
-        private void CreateFocusInputField()
+        // 创建关注点条目
+        private void CreateFocusHolder()
         {
             mFocusCount++;
-            Global.FocusList.Add("");
             int index = mFocusCount - 1;
 
-            FocusInputFieldTemplete.InstantiateWithParent(Content)
+            // 给样本空间添加一个关注点（样本点）
+            Global.SampleSpace.AddSamplePoint("", 1f);
+
+            FocusHolderTemplete.InstantiateWithParent(Content)
                 .SiblingIndex(Content.childCount - 3)
                 .Self(self =>
                 {
-                    TMP_Text label = self.transform.Find("TextArea").Find("Label").GetComponent<TMP_Text>();
-                    label.text = "关注点 " + mFocusCount;
+                    // 获取输入框
+                    TMP_InputField inputField = self.FocusInputField;
+                    self.Label.text = "关注点 " + mFocusCount;
+                    // 获取滑动条
+                    Slider slider = self.FocusSlider;
+                    slider.enabled = false;
 
-                    self.onEndEdit.AddListener(focus =>
+                    inputField.onEndEdit.AddListener(focusName =>
                     {
-                        Global.FocusList[index] = focus;
+                        Global.SampleSpace.SamplePoints[index].Name = focusName;
+
+                        if (focusName == "")
+                            slider.enabled = false;
+                        else
+                            slider.enabled = true;
                     });
                 })
                 .Show();

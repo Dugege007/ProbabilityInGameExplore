@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using static UnityEngine.Rendering.DebugUI;
 
 namespace ProbabilityTest
 {
@@ -14,8 +15,9 @@ namespace ProbabilityTest
     {
         public string Name;
         public List<SamplePoint> SamplePoints = new List<SamplePoint>();
-
         public CalMode Mode = CalMode.Percent;
+
+        public float TotalWeight = 0;
 
         public SampleSpace(string name = "DefaultSampleSpace", CalMode mode = CalMode.Percent)
         {
@@ -44,6 +46,7 @@ namespace ProbabilityTest
                 case CalMode.Weight:
                     SamplePoint samplePoint = new SamplePoint(samplePointName, 1f);
                     SamplePoints.Add(samplePoint);
+                    TotalWeight += 1f;
                     break;
 
                 default:
@@ -76,6 +79,7 @@ namespace ProbabilityTest
                 case CalMode.Weight:
                     samplePoint = new SamplePoint(samplePointName, Mathf.Clamp(value, 1f, 10000f));
                     SamplePoints.Add(samplePoint);
+                    TotalWeight += value;
                     break;
 
                 default:
@@ -91,15 +95,19 @@ namespace ProbabilityTest
         /// <param name="samplePoint">样本点</param>
         public void RemoveSamplePoint(SamplePoint samplePoint)
         {
-            if (CheckSamplePointValueEqualsZero(samplePoint))
+            switch (Mode)
             {
-                SamplePoints.Remove(samplePoint);
+                case CalMode.Percent:
+                    break;
+                case CalMode.Weight:
+                    TotalWeight -= samplePoint.Value;
+                    break;
+                default:
+                    break;
             }
-            else
-            {
-                SetSamplePointToZero(samplePoint);
-                SamplePoints.Remove(samplePoint);
-            }
+            SetSamplePointToZero(samplePoint);
+            SamplePoints.Remove(samplePoint);
+
         }
 
         /// <summary>
@@ -192,6 +200,8 @@ namespace ProbabilityTest
             float weightAdjustment = targetWeight - samplePoint.Value;
             //Debug.Log("权重需调整的值：" + weightAdjustment);
 
+            TotalWeight += weightAdjustment;
+
             samplePoint.Value = targetWeight;
         }
 
@@ -234,36 +244,23 @@ namespace ProbabilityTest
         }
 
         /// <summary>
-        /// 获取总权重
-        /// </summary>
-        /// <returns>总权重</returns>
-        public float GetTotalWeight()
-        {
-            float totalWeight = 0f;
-            foreach (SamplePoint point in SamplePoints)
-            {
-                totalWeight += point.Value;
-            }
-            //Debug.Log("GetTotalWeight() return " + totalWeight);
-            return totalWeight;
-        }
-
-        /// <summary>
         /// 权重 转 概率
         /// </summary>
         public void WeightToPercent()
         {
             Mode = CalMode.Percent;
 
-            float totalWeight = GetTotalWeight();
-            if (totalWeight > 0)
+            if (TotalWeight > 0)
                 foreach (SamplePoint point in SamplePoints)
-                    point.Value /= totalWeight;
+                    point.Value /= TotalWeight;
+
+            TotalWeight = 1f;
         }
 
         public void PercentToWeight()
         {
             Mode = CalMode.Weight;
+            TotalWeight = 1f;
         }
 
         /// <summary>
@@ -300,11 +297,15 @@ namespace ProbabilityTest
                 case CalMode.Percent:
                     foreach (SamplePoint point in SamplePoints.Where(p => !p.IsLocked && !p.IsLocked))
                         point.Value = targetPercent;
+                    TotalWeight = 1f;
                     break;
 
                 case CalMode.Weight:
                     foreach (SamplePoint point in SamplePoints.Where(p => !p.IsLocked && !p.IsLocked))
+                    {
                         point.Value = 1f;
+                        TotalWeight += point.Value;
+                    }
                     break;
 
                 default:

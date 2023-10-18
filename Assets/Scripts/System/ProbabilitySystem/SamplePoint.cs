@@ -42,7 +42,7 @@ namespace ProbabilityTest
             //if (1 - targetPercent <= 0.0001f)
             //{
             //    Debug.LogError("targetPercent 不能是 1");
-            //    return 0;
+            //    return 1;
             //}
 
             float currentWeight = Value;

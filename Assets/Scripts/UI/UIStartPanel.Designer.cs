@@ -5,7 +5,7 @@ using QFramework;
 
 namespace ProbabilityTest
 {
-	// Generate Id:781eb694-6718-4de5-89c3-2e845ae6f2ac
+	// Generate Id:50bd6cf6-d4d2-417e-8c2f-df23171429e7
 	public partial class UIStartPanel
 	{
 		public const string Name = "UIStartPanel";
