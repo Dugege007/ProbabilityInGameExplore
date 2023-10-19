@@ -3,6 +3,7 @@ using QFramework;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using System.Drawing;
+using QAssetBundle;
 
 namespace ProbabilityTest
 {
@@ -34,6 +35,8 @@ namespace ProbabilityTest
             // 监听 上一个选项按钮
             LastBtn.onClick.AddListener(() =>
             {
+                AudioKit.PlaySound(Sfx.CLICK);
+
                 int nextIndex = mOptionIndex - 1;
                 if (nextIndex < 0)
                     nextIndex = mGlobalOptions.Count - 1;
@@ -66,6 +69,8 @@ namespace ProbabilityTest
             // 监听 下一个选项按钮
             NextBtn.onClick.AddListener(() =>
             {
+                AudioKit.PlaySound(Sfx.CLICK);
+
                 int nextIndex = mOptionIndex + 1;
                 if (nextIndex >= mGlobalOptions.Count)
                     nextIndex = 0;
@@ -98,6 +103,8 @@ namespace ProbabilityTest
             // 监听 开始计算按钮
             ComputeBtn.onClick.AddListener(() =>
             {
+                AudioKit.PlaySound(Sfx.CLICK);
+
                 // 计算当前 Score
                 CalculateEveryFocusScore(mGlobalOptions[mOptionIndex]);
                 CalculateOptionScore(mGlobalOptions[mOptionIndex]);

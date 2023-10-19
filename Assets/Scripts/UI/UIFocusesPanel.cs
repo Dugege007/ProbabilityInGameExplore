@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using QFramework;
 using TMPro;
 using System.Collections.Generic;
+using QAssetBundle;
 
 namespace ProbabilityTest
 {
@@ -31,12 +32,16 @@ namespace ProbabilityTest
             // 监听 添加关注点按钮
             AddFocusBtn.onClick.AddListener(() =>
             {
+                AudioKit.PlaySound(Sfx.CLICK);
+
                 CreateFocusHolder();
             });
 
             // 监听 下一步按钮
             NextBtn.onClick.AddListener(() =>
             {
+                AudioKit.PlaySound(Sfx.CLICK);
+
                 // 清空样本空间中的样本点
                 Global.SampleSpace.SamplePoints.Clear();
 

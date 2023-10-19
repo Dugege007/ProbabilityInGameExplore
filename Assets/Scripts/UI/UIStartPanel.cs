@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using QFramework;
 using TMPro;
 using System.Collections.Generic;
+using QAssetBundle;
 
 namespace ProbabilityTest
 {
@@ -25,12 +26,15 @@ namespace ProbabilityTest
             // 监听 添加选项按钮
             AddOptionBtn.onClick.AddListener(() =>
             {
+                AudioKit.PlaySound(Sfx.CLICK);
                 CreateOptionInputField();
             });
 
             // 监听 下一步按钮
             NextBtn.onClick.AddListener(() =>
             {
+                AudioKit.PlaySound(Sfx.CLICK);
+
                 // 给主题和样本空间名赋值
                 Global.SampleSpace.Name = SubjectInputField.text;
                 Global.Subject.Name = SubjectInputField.text;

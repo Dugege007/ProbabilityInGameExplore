@@ -406,7 +406,7 @@ MonoBehaviour:
   FocusScoreHolderTemplete: {fileID: -6331548791960596872}
   Content: {fileID: 2033700853030966421}
   SubjectText: {fileID: 3207200155163795962}
-  SaveBtn: {fileID: 987978055542573489}
+  BackToHomeBtn: {fileID: 987978055542573489}
   ShareBtn: {fileID: 5722262247001351200}
 --- !u!1 &2803545923233168178
 GameObject:
@@ -1075,7 +1075,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u4FDD\u5B58\u7ED3\u679C"
+  m_text: "\u8FD4\u56DE\u9996\u9875"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 75cd726ee99c770479af5fce5e21df84, type: 2}
   m_sharedMaterial: {fileID: 4085525013124532939, guid: 75cd726ee99c770479af5fce5e21df84, type: 2}
@@ -1718,7 +1718,7 @@ GameObject:
   - component: {fileID: 5820362402310058923}
   - component: {fileID: 5816186312481019780}
   m_Layer: 5
-  m_Name: SaveBtn
+  m_Name: BackToHomeBtn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

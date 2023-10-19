@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using QFramework;
 using System.Linq;
+using QAssetBundle;
 
 namespace ProbabilityTest
 {
@@ -19,6 +20,16 @@ namespace ProbabilityTest
             FocusScoreHolderTemplete.Hide();
 
             CreateOptionResultHolder();
+
+            BackToHomeBtn.onClick.AddListener(() =>
+            {
+                AudioKit.PlaySound(Sfx.CLICK);
+            });
+
+            ShareBtn.onClick.AddListener(() =>
+            {
+                AudioKit.PlaySound(Sfx.CLICK);
+            });
         }
 
         protected override void OnOpen(IUIData uiData = null)
