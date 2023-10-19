@@ -27,20 +27,7 @@ namespace ProbabilityTest
             {
                 Bubble.Show();
 
-                SamplePoint samplePoint = Global.SampleSpace.GetSamplePointByName(FocusInputField.text);
-                float newValue;
-
-                if (Global.SampleSpace.Mode == CalMode.Percent)
-                {
-                    newValue = Mathf.Clamp(value, 0.0001f, 0.9999f);  // 限制值在0.0001到0.9999之间
-                    Global.SampleSpace.AdjustPercent(samplePoint, newValue);
-                }
-                else
-                {
-                    Global.SampleSpace.AdjustWeight(samplePoint, value);
-                    SliderText.text = value.ToString("F1");
-                    //Debug.Log("TotalWeight: " + Global.SampleSpace.TotalWeight);
-                }
+                SliderText.text = value.ToString("F1");
 
                 // 如果之前有 Coroutine 在运行，停止它
                 if (mHideBubbleCoroutine != null)

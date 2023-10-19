@@ -5,7 +5,7 @@ using QFramework;
 
 namespace ProbabilityTest
 {
-	// Generate Id:61024111-8766-466d-9261-bcd4a287084f
+	// Generate Id:d057bd89-b54a-4188-9475-85f9e45a361a
 	public partial class UIRatingPanel
 	{
 		public const string Name = "UIRatingPanel";
@@ -17,7 +17,7 @@ namespace ProbabilityTest
 		[SerializeField]
 		public TMPro.TextMeshProUGUI SubjectText;
 		[SerializeField]
-		public TMPro.TextMeshProUGUI OptionText;
+		public OptionRatingHolder OptionRatingHolder;
 		[SerializeField]
 		public UnityEngine.UI.Button LastBtn;
 		[SerializeField]
@@ -32,7 +32,7 @@ namespace ProbabilityTest
 			RatingHolderTemplete = null;
 			Content = null;
 			SubjectText = null;
-			OptionText = null;
+			OptionRatingHolder = null;
 			LastBtn = null;
 			NextBtn = null;
 			ComputeBtn = null;

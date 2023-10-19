@@ -10,7 +10,7 @@ namespace ProbabilityTest
         public string Description;
 
         public List<Option> Options { get; set; }
-
+        public float TotalWeight;
 
         public Subject(string name)
         {
@@ -43,6 +43,16 @@ namespace ProbabilityTest
 
             Debug.Log("GetSamplePointByName() 未找到名为：" + optionName + " 的 SamplePoint");
             return null;
+        }
+
+        public float GetTotalScore()
+        {
+            float totalWeight = 0f;
+            foreach (SamplePoint point in Global.SampleSpace.SamplePoints)
+            {
+                totalWeight += point.Value * 10f;
+            }
+            return totalWeight;
         }
     }
 }

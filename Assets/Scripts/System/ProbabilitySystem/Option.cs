@@ -13,12 +13,12 @@ namespace ProbabilityTest
             get { return mScore; }
             set
             {
-                if (IsLocked) return;
                 mScore = value;
             }
         }
+        public float Percent;
 
-        public bool IsLocked = false;
+        public bool IsUnLocked = false;
 
         public List<Focus> Focuses { get; set; }
 
@@ -51,7 +51,7 @@ namespace ProbabilityTest
                     return focus;
             }
 
-            Debug.Log("GetSamplePointByName() 未找到名为：" + focusName + " 的 SamplePoint");
+            Debug.Log("GetFocusByName() 未找到名为：" + focusName + " 的 Focus");
             return null;
         }
     }
