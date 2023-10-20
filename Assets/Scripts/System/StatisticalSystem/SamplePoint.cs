@@ -6,12 +6,29 @@ namespace ProbabilityTest
     public class SamplePoint
     {
         public string Name;
-        private float mValue;
 
+        public float MinValue = 0;
+        public float MaxValue = 10f;
+
+        private float mValue;
         public float Value
         {
             get { return mValue; }
-            set { mValue = Mathf.Clamp(value, 0, 10000f); }
+            set { mValue = Mathf.Clamp(value, MinValue, MaxValue); }
+        }
+
+        private float mWeight;
+        public float Weight
+        {
+            get { return mWeight; }
+            set { mWeight = Mathf.Clamp(value, 0, 10000f); }
+        }
+
+        private float mPercent;
+        public float Percent
+        {
+            get { return mPercent = (Value - MinValue) / (MaxValue - MinValue); }
+            set { mPercent = Mathf.Clamp(value, 0, 1f); }
         }
 
         // 锁定

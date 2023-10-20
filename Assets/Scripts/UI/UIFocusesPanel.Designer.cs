@@ -5,7 +5,7 @@ using QFramework;
 
 namespace ProbabilityTest
 {
-	// Generate Id:b2ff735a-ff7f-4be4-93da-73c1ffeffcb4
+	// Generate Id:5d2f7807-1b73-47c2-adf0-0893ebd53677
 	public partial class UIFocusesPanel
 	{
 		public const string Name = "UIFocusesPanel";

@@ -43,7 +43,6 @@ namespace ProbabilityTest
 
                 // 计算当前 Score
                 CalculateEveryFocusScore(mGlobalOptions[mOptionIndex]);
-                CalculateOptionScore(mGlobalOptions[mOptionIndex]);
                 // 当前序号 - 1
                 mOptionIndex = nextIndex;
 
@@ -77,7 +76,6 @@ namespace ProbabilityTest
 
                 // 计算当前 Score
                 CalculateEveryFocusScore(mGlobalOptions[mOptionIndex]);
-                CalculateOptionScore(mGlobalOptions[mOptionIndex]);
                 // 当前序号 + 1
                 mOptionIndex = nextIndex;
 
@@ -107,7 +105,6 @@ namespace ProbabilityTest
 
                 // 计算当前 Score
                 CalculateEveryFocusScore(mGlobalOptions[mOptionIndex]);
-                CalculateOptionScore(mGlobalOptions[mOptionIndex]);
 
                 CloseSelf();
                 // 打开结果面板
@@ -159,26 +156,15 @@ namespace ProbabilityTest
             }
         }
 
-        // 计算该选项的总分
-        private void CalculateOptionScore(Option option)
+        private void CalculateEveryFocusScore(Option option)
         {
             // 解锁选项
             option.IsUnLocked = true;
 
-            // 重置选项分数
-            option.Score = 0;
-            foreach (Focus focus in option.Focuses)
-            {
-                option.Score += focus.Score;
-            }
-            Debug.Log("选项 " + option.Name + " 得分：" + option.Score);
-        }
-
-        private void CalculateEveryFocusScore(Option option)
-        {
             for (int i = 0; i < mRatingSliders.Count; i++)
             {
-                option.Focuses[i].Score = Global.SampleSpace.SamplePoints[i].Value * mRatingSliders[i].value;
+                option.Focuses[i].Value = mRatingSliders[i].value;
+                option.Focuses[i].Score = Global.SampleSpace.SamplePoints[i].Value * option.Focuses[i].Value;
                 Debug.Log(option.Focuses[i].Name + " 得分：" + option.Focuses[i].Score);
             }
         }
@@ -192,7 +178,7 @@ namespace ProbabilityTest
                 for (int i = 0; i < mRatingSliders.Count; i++)
                 {
                     mRatingSliders[i].value = 0;
-                    option.Focuses[i].Score = 0;
+                    option.Focuses[i].Value = 0;
                 }
             }
             else
@@ -200,7 +186,7 @@ namespace ProbabilityTest
                 // 为滑动条赋值
                 for (int i = 0; i < mRatingSliders.Count; i++)
                 {
-                    mRatingSliders[i].value = option.Focuses[i].Score / Global.SampleSpace.SamplePoints[i].Value;
+                    mRatingSliders[i].value = option.Focuses[i].Value / Global.SampleSpace.SamplePoints[i].Value;
                 }
             }
 

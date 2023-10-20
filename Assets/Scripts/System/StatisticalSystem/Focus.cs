@@ -4,7 +4,9 @@ namespace ProbabilityTest
     public class Focus
     {
         public string Name;
-        public float Score = 0f;
+        public float Value = 0;
+        public float Score = 0;
+        public float Percent = 0;
 
         public Focus(string name)
         {

@@ -5,13 +5,13 @@ using QFramework;
 
 namespace ProbabilityTest
 {
-	// Generate Id:0b80b1fd-06ab-425e-9074-68166478db9d
+	// Generate Id:27eed060-a544-4116-a6fb-543f19421e6d
 	public partial class UIStartPanel
 	{
 		public const string Name = "UIStartPanel";
 		
 		[SerializeField]
-		public TMPro.TMP_InputField OptionInputFieldTemplete;
+		public OptionInputFieldHolderTemplete OptionInputFieldHolderTemplete;
 		[SerializeField]
 		public RectTransform Content;
 		[SerializeField]
@@ -20,16 +20,25 @@ namespace ProbabilityTest
 		public UnityEngine.UI.Button AddOptionBtn;
 		[SerializeField]
 		public UnityEngine.UI.Button NextBtn;
+		[SerializeField]
+		public RectTransform NotificationSubjectNull;
+		[SerializeField]
+		public RectTransform NotificationOptionCount;
+		[SerializeField]
+		public RectTransform NotificationOptionNull;
 		
 		private UIStartPanelData mPrivateData = null;
 		
 		protected override void ClearUIComponents()
 		{
-			OptionInputFieldTemplete = null;
+			OptionInputFieldHolderTemplete = null;
 			Content = null;
 			SubjectInputField = null;
 			AddOptionBtn = null;
 			NextBtn = null;
+			NotificationSubjectNull = null;
+			NotificationOptionCount = null;
+			NotificationOptionNull = null;
 			
 			mData = null;
 		}

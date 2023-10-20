@@ -8,30 +8,22 @@ using QFramework;
 
 namespace ProbabilityTest
 {
-	public partial class FocusHolderTemplete
+	public partial class OptionInputFieldHolderTemplete
 	{
-		[SerializeField] public TMPro.TMP_InputField FocusInputField;
+		[SerializeField] public TMPro.TMP_InputField OptionInputField;
 		[SerializeField] public TMPro.TextMeshProUGUI Label;
-		[SerializeField] public UnityEngine.UI.Slider FocusSlider;
-		[SerializeField] public UnityEngine.UI.Image Bubble;
-		[SerializeField] public TMPro.TextMeshProUGUI BubbleText;
-		[SerializeField] public TMPro.TextMeshProUGUI SliderText;
 		[SerializeField] public UnityEngine.UI.Button RemoveBtn;
 
 		public void Clear()
 		{
-			FocusInputField = null;
+			OptionInputField = null;
 			Label = null;
-			FocusSlider = null;
-			Bubble = null;
-			BubbleText = null;
-			SliderText = null;
 			RemoveBtn = null;
 		}
 
 		public override string ComponentName
 		{
-			get { return "FocusHolderTemplete";}
+			get { return "OptionInputFieldHolderTemplete";}
 		}
 	}
 }

@@ -50,7 +50,7 @@ namespace ProbabilityTest
             float totalWeight = 0f;
             foreach (SamplePoint point in Global.SampleSpace.SamplePoints)
             {
-                totalWeight += point.Value * 10f;
+                totalWeight += point.Value * point.MaxValue;
             }
             return totalWeight;
         }

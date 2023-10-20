@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using UnityEngine;
 
@@ -7,16 +8,31 @@ namespace ProbabilityTest
     public class Option
     {
         public string Name;
-        private float mScore = 0f;
+        private float mScore = 0;
         public float Score
         {
-            get { return mScore; }
-            set
+            get
             {
-                mScore = value;
+                mScore = 0f;
+                foreach (Focus focus in Focuses)
+                    mScore += focus.Score;
+                Debug.Log("选项 " + Name + " 得分：" + Score);
+                return mScore;
             }
         }
-        public float Percent;
+        private float mMaxScore = 0;
+        public float MaxScore
+        {
+            get
+            {
+                mMaxScore = 0f;
+                foreach (SamplePoint point in Global.SampleSpace.SamplePoints)
+                    mMaxScore += point.Value * point.MaxValue;
+                Debug.Log("选项 " + Name + " 总分：" + MaxScore);
+                return mMaxScore;
+            }
+        }
+        public float Percent { get { return Score / MaxScore; } }
 
         public bool IsUnLocked = false;
 

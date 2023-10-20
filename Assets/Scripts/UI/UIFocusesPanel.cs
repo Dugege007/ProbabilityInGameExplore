@@ -15,6 +15,7 @@ namespace ProbabilityTest
         private int mFocusIndex = 0;
         private List<TMP_InputField> mFocusInputFields = new List<TMP_InputField>();
         private List<Slider> mFocusSliders = new List<Slider>();
+        private List<TMP_Text> mTMPFocusLabels = new List<TMP_Text>();
 
         protected override void OnInit(IUIData uiData = null)
         {
@@ -107,6 +108,7 @@ namespace ProbabilityTest
                     mFocusInputFields.Add(inputField);
 
                     self.Label.text = "关注点 " + mFocusIndex;
+                    mTMPFocusLabels.Add(self.Label);
 
                     // 获取滑动条
                     Slider slider = self.FocusSlider;
@@ -122,6 +124,23 @@ namespace ProbabilityTest
                             slider.enabled = false;
                         else
                             slider.enabled = true;
+                    });
+
+                    self.RemoveBtn.onClick.AddListener(() =>
+                    {
+                        AudioKit.PlaySound(Sfx.CLICK);
+
+                        mFocusInputFields.Remove(inputField);
+                        mFocusSliders.Remove(slider);
+                        mTMPFocusLabels.Remove(self.Label);
+                        mFocusIndex--;
+
+                        for (int i = 0; i < mTMPFocusLabels.Count; i++)
+                        {
+                            mTMPFocusLabels[i].text = "关注点 " + (i + 1);
+                        }
+
+                        self.DestroyGameObjGracefully();
                     });
                 })
                 .Show();
