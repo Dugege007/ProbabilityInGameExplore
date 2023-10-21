@@ -1,15 +1,15 @@
 ManifestFileVersion: 0
-CRC: 1623951066
+CRC: 2475605213
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 71edd08a76119ca25e3ebd345d2bc0d6
+    Hash: e900ec55e06923940ee7fb2effd2e567
   TypeTreeHash:
     serializedVersion: 2
-    Hash: 524b64bd0d7acd6f321f1fe7b4383ab9
+    Hash: fd1720b02c425e65d3eb3ffb2fce92c0
   IncrementalBuildHash:
     serializedVersion: 2
-    Hash: 71edd08a76119ca25e3ebd345d2bc0d6
+    Hash: e900ec55e06923940ee7fb2effd2e567
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -45,6 +45,8 @@ ClassTypes:
 - Class: 114
   Script: {fileID: 11500000, guid: 59f8146938fff824cb5fd77236b75775, type: 3}
 - Class: 114
+  Script: {fileID: 11500000, guid: f82cb58d45475834ba39349f9b9b81e1, type: 3}
+- Class: 114
   Script: {fileID: 11500000, guid: 0d51f3a7c41ab0346b49ae50d456bece, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: 01bee7bfa88934e499a392a02b13e3c0, type: 3}
@@ -73,6 +75,8 @@ ClassTypes:
 - Class: 225
   Script: {instanceID: 0}
 SerializeReferenceClassIdentifiers:
+- AssemblyName: Assembly-CSharp
+  ClassName: RainbowArt.CleanFlatUI.Notification/NotificationEvent
 - AssemblyName: Unity.TextMeshPro
   ClassName: TMPro.FaceInfo_Legacy
 - AssemblyName: Unity.TextMeshPro
