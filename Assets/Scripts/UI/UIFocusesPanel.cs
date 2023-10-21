@@ -34,8 +34,19 @@ namespace ProbabilityTest
 
             // 展示之前输入的信息
             SetInfoText();
-            // 创建一个关注点输入框
-            CreateFocusHolder();
+
+            if (Global.SampleSpace != null)
+            {
+                foreach (SamplePoint point in Global.SampleSpace.SamplePoints)
+                {
+                    CreateFocusHolder(point.Name, point.Value);
+                }
+            }
+            else
+            {
+                // 创建一个关注点输入框
+                CreateFocusHolder();
+            }
 
             // 监听 添加关注点按钮
             AddFocusBtn.onClick.AddListener(() =>
@@ -50,54 +61,67 @@ namespace ProbabilityTest
             {
                 AudioKit.PlaySound(Sfx.CLICK);
 
-                bool isAllInput = true;
-                foreach (var field in mFocusInputFields)
-                {
-                    if (field.text.IsNullOrEmpty())
-                    {
-                        isAllInput = false;
-                        field.transform.Find("Background").GetComponent<Image>().color = Color.red;
-                    }
-                }
-
-                if (isAllInput == false)
+                // 检查是否全部输入
+                if (ValidateInputs() == false)
                 {
                     NotificationFocusNull.ShowNotification();
                     return;
                 }
 
+                // 检查关注点是否小于 1
                 if (mFocusInputFields.Count < 1)
                 {
                     NotificationFocusCount.ShowNotification();
                     return;
                 }
 
-                for (int i = 0; i < mFocusInputFields.Count - 1; i++)
+                // 检查是否有相同的输入
+                if (CheckSameInput() == false)
                 {
-                    for (int j = i + 1; j < mFocusInputFields.Count; j++)
+                    return;
+                }
+
+                // 如果是历史记录
+                if (Global.Subject.IsHistory)
+                {
+                    // SampleSpace 缓存
+                    SampleSpace sampleSpaceCache = new SampleSpace(Global.Subject.Name, CalMode.Weight);
+
+                    // 在样本空间的样本点列表中添加关注点
+                    foreach (var inputField in mFocusInputFields)
                     {
-                        if (mFocusInputFields[i].text == mFocusInputFields[j].text)
+                        // 如果在选项中可以找到已有的关注点
+                        if (Global.Subject.Options[0].GetFocusByName(inputField.text) != null)
                         {
-                            NotificationFocusSame.ShowNotification();
-                            mFocusInputFields[i].transform.Find("Background").GetComponent<Image>().color = Color.red;
-                            mFocusInputFields[j].transform.Find("Background").GetComponent<Image>().color = Color.red;
-                            mSameTextInputFields.Add(mFocusInputFields[i]);
-                            mSameTextInputFields.Add(mFocusInputFields[j]);
-                            return;
+                            // 添加该关注点到缓存中
+                            sampleSpaceCache.SamplePoints.Add(Global.SampleSpace.GetSamplePointByName(inputField.text));
                         }
+                        else
+                        {
+                            // 找不到，则添加一个新的关注点
+                            sampleSpaceCache.AddSamplePoint(inputField.text);
+                        }
+                    }
+                    Global.SampleSpace = sampleSpaceCache;
+                }
+                // 否则
+                else
+                {
+                    // 清空样本空间中的样本点
+                    Global.SampleSpace.SamplePoints.Clear();
+                    // 清空各选项中的关注点
+                    foreach(Option option in Global.Subject.Options)
+                        option.Focuses.Clear();
+
+                    // 根据用户操作添加样本点
+                    for (int i = 0; i < mFocusInputFields.Count; i++)
+                    {
+                        Global.SampleSpace.AddSamplePoint(mFocusInputFields[i].text, mFocusSliders[i].value);
+                        Debug.Log("已添加：" + Global.SampleSpace.SamplePoints[i].Name + ": " + Global.SampleSpace.SamplePoints[i].Value);
                     }
                 }
 
-                // 清空样本空间中的样本点
-                Global.SampleSpace.SamplePoints.Clear();
-
-                // 根据用户操作添加样本点
-                for (int i = 0; i < mFocusInputFields.Count; i++)
-                {
-                    Global.SampleSpace.AddSamplePoint(mFocusInputFields[i].text, mFocusSliders[i].value);
-                    Debug.Log("已添加：" + Global.SampleSpace.SamplePoints[i].Name + ": " + Global.SampleSpace.SamplePoints[i].Value);
-                }
-
+                // 为所有选项添加关注点
                 for (int i = 0; i < Global.Subject.Options.Count; i++)
                 {
                     for (int j = 0; j < mFocusInputFields.Count; j++)
@@ -139,7 +163,7 @@ namespace ProbabilityTest
         }
 
         // 创建关注点条目
-        private void CreateFocusHolder()
+        private void CreateFocusHolder(string focusText = "", float focusValue = 1f)
         {
             mFocusIndex++;
 
@@ -149,6 +173,7 @@ namespace ProbabilityTest
                 {
                     // 获取输入框
                     TMP_InputField inputField = self.FocusInputField;
+                    inputField.text = focusText;
                     // 添加输入框到列表
                     mFocusInputFields.Add(inputField);
 
@@ -157,17 +182,18 @@ namespace ProbabilityTest
 
                     // 获取滑动条
                     Slider slider = self.FocusSlider;
+                    slider.value = focusValue;
                     // 添加滑动条到列表
                     mFocusSliders.Add(slider);
 
                     // 监听输入框
                     inputField.onEndEdit.AddListener(focusName =>
                     {
-                        inputField.transform.Find("Background").GetComponent<Image>().color = mOriginalFocusBGColor;
+                        SetInputFieldBGColor(inputField, mOriginalFocusBGColor);
 
                         foreach (var field in mSameTextInputFields.Where(f => f != null))
                         {
-                            field.transform.Find("Background").GetComponent<Image>().color = mOriginalFocusBGColor;
+                            SetInputFieldBGColor(field, mOriginalFocusBGColor);
                         }
                     });
 
@@ -189,6 +215,51 @@ namespace ProbabilityTest
                     });
                 })
                 .Show();
+        }
+
+        // 判断是否多个输入相同
+        private bool CheckSameInput()
+        {
+            bool isAllDifferent = true;
+
+            for (int i = 0; i < mFocusInputFields.Count - 1; i++)
+            {
+                for (int j = i + 1; j < mFocusInputFields.Count; j++)
+                {
+                    if (mFocusInputFields[i].text == mFocusInputFields[j].text)
+                    {
+                        NotificationFocusSame.ShowNotification();
+                        SetInputFieldBGColor(mFocusInputFields[i], Color.red);
+                        SetInputFieldBGColor(mFocusInputFields[j], Color.red);
+                        mSameTextInputFields.Add(mFocusInputFields[i]);
+                        mSameTextInputFields.Add(mFocusInputFields[j]);
+                        isAllDifferent = false;
+                    }
+                }
+            }
+
+            return isAllDifferent;
+        }
+
+        // 验证是否全部输入
+        private bool ValidateInputs()
+        {
+            bool isAllInput = true;
+            foreach (var field in mFocusInputFields)
+            {
+                if (field.text.IsNullOrEmpty())
+                {
+                    isAllInput = false;
+                    SetInputFieldBGColor(field, Color.red);
+                }
+            }
+            return isAllInput;
+        }
+
+        // 设置背景颜色
+        private void SetInputFieldBGColor(TMP_InputField inputField, Color color)
+        {
+            inputField.transform.Find("Background").GetComponent<Image>().color = color;
         }
 
         protected override void OnHide()

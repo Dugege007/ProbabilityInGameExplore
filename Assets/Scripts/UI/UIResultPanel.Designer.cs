@@ -5,7 +5,7 @@ using QFramework;
 
 namespace ProbabilityTest
 {
-	// Generate Id:fda3c641-1fbf-4beb-82f2-891fd84fb27a
+	// Generate Id:4e699b7b-d70f-48b2-b709-edf195a4525b
 	public partial class UIResultPanel
 	{
 		public const string Name = "UIResultPanel";
@@ -19,9 +19,9 @@ namespace ProbabilityTest
 		[SerializeField]
 		public TMPro.TextMeshProUGUI SubjectText;
 		[SerializeField]
-		public UnityEngine.UI.Button BackToHomeBtn;
+		public UnityEngine.UI.Button SaveBtn;
 		[SerializeField]
-		public UnityEngine.UI.Button ShareBtn;
+		public UnityEngine.UI.Button BackToHomeBtn;
 		
 		private UIResultPanelData mPrivateData = null;
 		
@@ -31,8 +31,8 @@ namespace ProbabilityTest
 			FocusScoreHolderTemplete = null;
 			Content = null;
 			SubjectText = null;
+			SaveBtn = null;
 			BackToHomeBtn = null;
-			ShareBtn = null;
 			
 			mData = null;
 		}

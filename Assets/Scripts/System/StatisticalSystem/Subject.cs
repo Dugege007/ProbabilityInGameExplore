@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -7,12 +8,15 @@ namespace ProbabilityTest
     public class Subject
     {
         public string Name;
+        public string Date = DateTime.Now.ToString("G");
+        public string Key { get { return Name + Date; } }
         public string Description;
 
-        public List<Option> Options { get; set; }
-        public float TotalWeight;
+        public bool IsHistory { get; set; } = false;
 
-        public Subject(string name)
+        public List<Option> Options { get; set; }
+
+        public Subject(string name = "SubjectName")
         {
             Name = name;
             Options = new List<Option>();  // 初始化列表
@@ -41,18 +45,8 @@ namespace ProbabilityTest
                     return option;
             }
 
-            Debug.Log("GetSamplePointByName() 未找到名为：" + optionName + " 的 SamplePoint");
+            Debug.Log("GetOptionByName() 未找到名为：" + optionName + " 的 Option");
             return null;
-        }
-
-        public float GetTotalScore()
-        {
-            float totalWeight = 0f;
-            foreach (SamplePoint point in Global.SampleSpace.SamplePoints)
-            {
-                totalWeight += point.Value * point.MaxValue;
-            }
-            return totalWeight;
         }
     }
 }

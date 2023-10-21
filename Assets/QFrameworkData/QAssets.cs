@@ -23,6 +23,16 @@ namespace QAssetBundle
         public const string BundleName = "uifocusespanel_prefab";
         public const string UIFOCUSESPANEL = "UIFocusesPanel";
     }
+    public class Uihistorypanel_prefab
+    {
+        public const string BundleName = "uihistorypanel_prefab";
+        public const string UIHISTORYPANEL = "UIHistoryPanel";
+    }
+    public class Uihomepanel_prefab
+    {
+        public const string BundleName = "uihomepanel_prefab";
+        public const string UIHOMEPANEL = "UIHomePanel";
+    }
     public class Uiratingpanel_prefab
     {
         public const string BundleName = "uiratingpanel_prefab";

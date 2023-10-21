@@ -14,7 +14,7 @@ namespace ProbabilityTest
 
         private void Start()
         {
-            UIKit.OpenPanel<UIStartPanel>();
+            UIKit.OpenPanel<UIHomePanel>();
         }
 
         private void OnDestroy()

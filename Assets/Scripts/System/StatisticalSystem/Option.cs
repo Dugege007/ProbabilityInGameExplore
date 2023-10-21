@@ -32,7 +32,7 @@ namespace ProbabilityTest
         }
         public float Percent { get { return Score / MaxScore; } }
 
-        public bool IsUnLocked = false;
+        public bool IsUnLocked { get; set; } = false;
 
         public List<Focus> Focuses { get; set; }
 

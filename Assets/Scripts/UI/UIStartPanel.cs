@@ -5,7 +5,6 @@ using TMPro;
 using System.Collections.Generic;
 using QAssetBundle;
 using System.Linq;
-using static UnityEngine.Rendering.DebugUI;
 
 namespace ProbabilityTest
 {
@@ -16,7 +15,7 @@ namespace ProbabilityTest
     {
         private int mOptionIndex = 0;
         private List<TMP_InputField> mOptionInputFields = new List<TMP_InputField>();
-        private List<TMP_Text> mTMPOptionLabels = new List<TMP_Text>();
+        private List<TMP_Text> mOptionLabels = new List<TMP_Text>();
 
         private Color mOriginalOptionBGColor = new Color(25f / 255, 103f / 255, 116f / 255);
         private List<TMP_InputField> mSameTextInputFields = new List<TMP_InputField>();
@@ -32,6 +31,15 @@ namespace ProbabilityTest
             NotificationOptionCount.Hide();
             NotificationOptionNull.Hide();
             NotificationOptionSame.Hide();
+
+            if (Global.Subject != null)
+            {
+                SubjectInputField.text = Global.Subject.Name;
+                foreach (Option option in Global.Subject.Options)
+                {
+                    CreateOptionInputField(option.Name);
+                }
+            }
 
             SubjectInputField.onEndEdit.AddListener(subjectName =>
             {
@@ -63,17 +71,7 @@ namespace ProbabilityTest
                     return;
                 }
 
-                bool isAllInput = true;
-                foreach (var field in mOptionInputFields)
-                {
-                    if (field.text.IsNullOrEmpty())
-                    {
-                        isAllInput = false;
-                        field.transform.Find("Background").GetComponent<Image>().color = Color.red;
-                    }
-                }
-
-                if (isAllInput == false)
+                if (ValidateInputs() == false)
                 {
                     NotificationOptionNull.ShowNotification();
                     return;
@@ -86,8 +84,8 @@ namespace ProbabilityTest
                         if (mOptionInputFields[i].text == mOptionInputFields[j].text)
                         {
                             NotificationOptionSame.ShowNotification();
-                            mOptionInputFields[i].transform.Find("Background").GetComponent<Image>().color = Color.red;
-                            mOptionInputFields[j].transform.Find("Background").GetComponent<Image>().color = Color.red;
+                            SetInputFieldBGColor(mOptionInputFields[i], Color.red);
+                            SetInputFieldBGColor(mOptionInputFields[j], Color.red);
                             mSameTextInputFields.Add(mOptionInputFields[i]);
                             mSameTextInputFields.Add(mOptionInputFields[j]);
                             return;
@@ -95,16 +93,41 @@ namespace ProbabilityTest
                     }
                 }
 
-                // 给主题和样本空间名赋值
-                Global.SampleSpace.Name = SubjectInputField.text;
-                Global.Subject.Name = SubjectInputField.text;
+                if (Global.Subject == null)
+                    Global.Subject = new Subject();
+                if (Global.SampleSpace == null)
+                    Global.SampleSpace = new SampleSpace(Global.Subject.Name, CalMode.Weight);
 
-                // 清空主题中的选项的数据
-                Global.Subject.Options.Clear();
-                // 在 Subject 中添加 Option
-                foreach (var inputField in mOptionInputFields)
+                // 给主题和样本空间名赋值
+                Global.Subject.Name = SubjectInputField.text;
+                Global.SampleSpace.Name = SubjectInputField.text;
+
+                if (Global.Subject.IsHistory)
                 {
-                    Global.Subject.AddOption(inputField.text);
+                    Subject subjectCache = new Subject(SubjectInputField.text);
+
+                    foreach (var inputField in mOptionInputFields)
+                    {
+                        if (Global.Subject.GetOptionByName(inputField.text) != null)
+                        {
+                            subjectCache.Options.Add(Global.Subject.GetOptionByName(inputField.text));
+                        }
+                        else
+                        {
+                            subjectCache.AddOption(inputField.text);
+                        }
+                    }
+                    Global.Subject = subjectCache;
+                }
+                else
+                {
+                    // 清空主题中的选项的数据
+                    Global.Subject.Options.Clear();
+                    // 在 Subject 中添加 Option
+                    foreach (var inputField in mOptionInputFields)
+                    {
+                        Global.Subject.AddOption(inputField.text);
+                    }
                 }
 
                 CloseSelf();
@@ -122,7 +145,7 @@ namespace ProbabilityTest
         }
 
         // 创建 选项输入框
-        private void CreateOptionInputField()
+        private void CreateOptionInputField(string optionText = "")
         {
             mOptionIndex++;
 
@@ -130,37 +153,57 @@ namespace ProbabilityTest
                 .SiblingIndex(Content.childCount - 3)
                 .Self(self =>
                 {
+                    self.OptionInputField.text = optionText;
                     // 添加输入框到列表
                     mOptionInputFields.Add(self.OptionInputField);
                     self.OptionInputField.onEndEdit.AddListener(optionName =>
                     {
-                        self.OptionInputField.transform.Find("Background").GetComponent<Image>().color = mOriginalOptionBGColor;
+                        SetInputFieldBGColor(self.OptionInputField, mOriginalOptionBGColor);
 
                         foreach (var inputField in mSameTextInputFields.Where(f => f != null))
-                        {
-                            inputField.transform.Find("Background").GetComponent<Image>().color = mOriginalOptionBGColor;
-                        }
+                            SetInputFieldBGColor(inputField, mOriginalOptionBGColor);
                     });
 
                     self.Label.text = "选项 " + mOptionIndex;
-                    mTMPOptionLabels.Add(self.Label);
+                    mOptionLabels.Add(self.Label);
 
                     self.RemoveBtn.onClick.AddListener(() =>
                     {
                         AudioKit.PlaySound(Sfx.CLICK);
 
                         mOptionInputFields.Remove(self.OptionInputField);
-                        mTMPOptionLabels.Remove(self.Label);
+                        mOptionLabels.Remove(self.Label);
                         mOptionIndex--;
 
                         // 重设序号
-                        for (int i = 0; i < mTMPOptionLabels.Count; i++)
-                            mTMPOptionLabels[i].text = "选项 " + (i + 1);
+                        for (int i = 0; i < mOptionLabels.Count; i++)
+                            mOptionLabels[i].text = "选项 " + (i + 1);
 
                         self.DestroyGameObjGracefully();
                     });
                 })
                 .Show();
+        }
+
+        // 设置背景颜色
+        private void SetInputFieldBGColor(TMP_InputField inputField, Color color)
+        {
+            inputField.transform.Find("Background").GetComponent<Image>().color = color;
+        }
+
+        // 验证是否全部输入
+        private bool ValidateInputs()
+        {
+            bool isAllInput = true;
+            foreach (var field in mOptionInputFields)
+            {
+                if (field.text.IsNullOrEmpty())
+                {
+                    isAllInput = false;
+                    SetInputFieldBGColor(field, Color.red);
+                }
+            }
+            return isAllInput;
         }
 
         protected override void OnHide()

@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using System.Drawing;
 using QAssetBundle;
+using Unity.VisualScripting;
+using System.Collections.ObjectModel;
 
 namespace ProbabilityTest
 {
@@ -24,6 +26,16 @@ namespace ProbabilityTest
         {
             mData = uiData as UIRatingPanelData ?? new UIRatingPanelData();
             // please add init code here
+
+            foreach (var option in Global.Subject.Options)
+            {
+                Debug.Log("Global.Subject.Options：" + option.Name);
+            }
+
+            foreach (var point in Global.SampleSpace.SamplePoints)
+            {
+                Debug.Log("Global.SampleSpace.SamplePoints：" + point.Name);
+            }
 
             RatingHolderTemplete.Hide();
             ComputeBtn.Hide();
@@ -50,19 +62,8 @@ namespace ProbabilityTest
                 RefreshOptionInfo();
                 // 重置滑动条
                 ResetSliderValue(mGlobalOptions[mOptionIndex]);
-
-                bool isAllUnLocked = true;
-                foreach (Option option in mGlobalOptions)
-                {
-                    if (option.IsUnLocked == false)
-                    {
-                        isAllUnLocked = false;
-                        break;
-                    }
-                }
-
-                if (isAllUnLocked)
-                    ComputeBtn.Show();
+                // 检查选项是否全部解锁
+                CheckAllOptionsUnLocked();
             });
 
             // 监听 下一个选项按钮
@@ -83,19 +84,8 @@ namespace ProbabilityTest
                 RefreshOptionInfo();
                 // 重置滑动条
                 ResetSliderValue(mGlobalOptions[mOptionIndex]);
-
-                bool isAllUnLocked = true;
-                foreach (Option option in mGlobalOptions)
-                {
-                    if (option.IsUnLocked == false)
-                    {
-                        isAllUnLocked = false;
-                        break;
-                    }
-                }
-
-                if (isAllUnLocked)
-                    ComputeBtn.Show();
+                // 检查选项是否全部解锁
+                CheckAllOptionsUnLocked();
             });
 
             // 监听 开始计算按钮
@@ -103,7 +93,7 @@ namespace ProbabilityTest
             {
                 AudioKit.PlaySound(Sfx.CLICK);
 
-                // 计算当前 Score
+                // 计算 Score
                 CalculateEveryFocusScore(mGlobalOptions[mOptionIndex]);
 
                 CloseSelf();
@@ -130,7 +120,7 @@ namespace ProbabilityTest
 
         private void CreateRatingHolder()
         {
-            Option option = Global.Subject.GetOptionByName(mOptionName);
+            Option option = Global.Subject.Options[0];
 
             for (int i = 0; i < Global.SampleSpace.SamplePoints.Count; i++)
             {
@@ -151,6 +141,8 @@ namespace ProbabilityTest
 
                             self.SliderText.text = value.ToString("F1");
                         });
+
+                        self.RatingSlider.value = option.GetFocusByName(point.Name).Value;
                     })
                     .Show();
             }
@@ -191,6 +183,22 @@ namespace ProbabilityTest
 
             foreach (var ratingHolder in mRatingHolderTempletes)
                 ratingHolder.Bubble.Hide();
+        }
+
+        private void CheckAllOptionsUnLocked()
+        {
+            bool isAllUnLocked = true;
+            foreach (Option option in mGlobalOptions)
+            {
+                if (!option.IsUnLocked)
+                {
+                    isAllUnLocked = false;
+                    break;
+                }
+            }
+
+            if (isAllUnLocked)
+                ComputeBtn.Show();
         }
 
         protected override void OnHide()

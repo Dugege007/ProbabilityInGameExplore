@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using static UnityEngine.Rendering.DebugUI;
@@ -14,6 +15,9 @@ namespace ProbabilityTest
     public class SampleSpace
     {
         public string Name;
+        public string Date = DateTime.Now.ToString("G");
+        public string Key { get { return Name + Date; } }
+
         public List<SamplePoint> SamplePoints = new List<SamplePoint>();
         public CalMode Mode = CalMode.Percent;
 
@@ -77,7 +81,7 @@ namespace ProbabilityTest
                     break;
 
                 case CalMode.Weight:
-                    samplePoint = new SamplePoint(samplePointName, Mathf.Clamp(value, 1f, 10000f));
+                    samplePoint = new SamplePoint(samplePointName, Mathf.Clamp(value, 0, 10000f));
                     SamplePoints.Add(samplePoint);
                     TotalWeight += value;
                     break;

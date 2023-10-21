@@ -10,7 +10,7 @@ namespace ProbabilityTest
         public float MinValue = 0;
         public float MaxValue = 10f;
 
-        private float mValue;
+        private float mValue = 0;
         public float Value
         {
             get { return mValue; }

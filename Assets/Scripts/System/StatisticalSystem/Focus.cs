@@ -1,20 +1,22 @@
 ﻿
-using UnityEngine.Rendering.Universal;
-
 namespace ProbabilityTest
 {
     public class Focus
     {
         public string Name { get; set; }
-        public float Value { get; set; }
+        private float mValue = 0;
+        public float Value
+        {
+            get { return mValue; }
+            set { mValue = value; }
+        }
 
         private float mMaxScore = 0;
         public float MaxScore
         {
             get
             {
-                SamplePoint samplePoint = Global.SampleSpace.GetSamplePointByName(Name);
-                mMaxScore = samplePoint.Value * samplePoint.MaxValue;
+                mMaxScore = Global.SampleSpace.GetSamplePointByName(Name).Value * Global.SampleSpace.GetSamplePointByName(Name).MaxValue;
                 return mMaxScore;
             }
         }
@@ -23,8 +25,7 @@ namespace ProbabilityTest
         {
             get
             {
-                SamplePoint samplePoint = Global.SampleSpace.GetSamplePointByName(Name);
-                mScore = samplePoint.Value * Value;
+                mScore = Global.SampleSpace.GetSamplePointByName(Name).Value * mValue;
                 return mScore;
             }
         }

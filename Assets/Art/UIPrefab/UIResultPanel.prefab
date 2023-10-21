@@ -406,8 +406,8 @@ MonoBehaviour:
   FocusScoreHolderTemplete: {fileID: -6331548791960596872}
   Content: {fileID: 2033700853030966421}
   SubjectText: {fileID: 3207200155163795962}
+  SaveBtn: {fileID: 5722262247001351200}
   BackToHomeBtn: {fileID: 987978055542573489}
-  ShareBtn: {fileID: 5722262247001351200}
 --- !u!1 &2803545923233168178
 GameObject:
   m_ObjectHideFlags: 0
@@ -2311,7 +2311,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "<b><size=60>\u665A\u996D\u5403\u4EC0\u4E48\uFF1F</size></b>\n"
+  m_text: "\u665A\u996D\u5403\u4EC0\u4E48\uFF1F\n"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 75cd726ee99c770479af5fce5e21df84, type: 2}
   m_sharedMaterial: {fileID: 4085525013124532939, guid: 75cd726ee99c770479af5fce5e21df84, type: 2}
@@ -2338,13 +2338,13 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 60
+  m_fontSizeBase: 60
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
+  m_fontStyle: 1
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
