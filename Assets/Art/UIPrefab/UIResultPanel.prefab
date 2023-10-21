@@ -250,8 +250,8 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1835429573324767318}
-  - {fileID: 7658431466296492691}
   - {fileID: 8213732818570946607}
+  - {fileID: 7658431466296492691}
   m_Father: {fileID: 5368444306594251990}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
@@ -805,7 +805,7 @@ GameObject:
   - component: {fileID: 8845208903944080538}
   - component: {fileID: 6351914690706436609}
   m_Layer: 5
-  m_Name: ShareBtn
+  m_Name: SaveBtn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1702,7 +1702,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -10, y: -10}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &5055311177098601148
 GameObject:
@@ -1860,7 +1860,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -10, y: 10}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6425566934327167995
 CanvasRenderer:
@@ -1883,7 +1883,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.098039225, g: 0.4039216, b: 0.454902, a: 1}
+  m_Color: {r: 0.5647059, g: 0.627451, b: 0.6156863, a: 0.5019608}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -2154,8 +2154,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 10, y: -50}
+  m_AnchoredPosition: {x: 0, y: -50}
+  m_SizeDelta: {x: 10, y: -100}
   m_Pivot: {x: 1, y: 1}
 --- !u!222 &3631836842673722277
 CanvasRenderer:
@@ -2701,7 +2701,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u5206\u4EAB"
+  m_text: "\u4FDD\u5B58"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 75cd726ee99c770479af5fce5e21df84, type: 2}
   m_sharedMaterial: {fileID: 4085525013124532939, guid: 75cd726ee99c770479af5fce5e21df84, type: 2}

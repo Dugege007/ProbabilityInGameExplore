@@ -4,6 +4,8 @@ using QFramework;
 using TMPro;
 using System.Collections.Generic;
 using QAssetBundle;
+using System.Linq;
+using static UnityEngine.Rendering.DebugUI;
 
 namespace ProbabilityTest
 {
@@ -16,6 +18,9 @@ namespace ProbabilityTest
         private List<TMP_InputField> mOptionInputFields = new List<TMP_InputField>();
         private List<TMP_Text> mTMPOptionLabels = new List<TMP_Text>();
 
+        private Color mOriginalOptionBGColor = new Color(25f / 255, 103f / 255, 116f / 255);
+        private List<TMP_InputField> mSameTextInputFields = new List<TMP_InputField>();
+
         protected override void OnInit(IUIData uiData = null)
         {
             mData = uiData as UIStartPanelData ?? new UIStartPanelData();
@@ -26,11 +31,11 @@ namespace ProbabilityTest
             NotificationSubjectNull.Hide();
             NotificationOptionCount.Hide();
             NotificationOptionNull.Hide();
+            NotificationOptionSame.Hide();
 
             SubjectInputField.onEndEdit.AddListener(subjectName =>
             {
-                if (subjectName != null)
-                    NotificationSubjectNull.Hide();
+
             });
 
             // 监听 添加选项按钮
@@ -39,9 +44,6 @@ namespace ProbabilityTest
                 AudioKit.PlaySound(Sfx.CLICK);
 
                 CreateOptionInputField();
-
-                if (mOptionInputFields.Count >= 1)
-                    NotificationOptionCount.Hide();
             });
 
             // 监听 下一步按钮
@@ -51,17 +53,13 @@ namespace ProbabilityTest
 
                 if (SubjectInputField.text.IsNullOrEmpty())
                 {
-                    NotificationSubjectNull.Show();
+                    NotificationSubjectNull.ShowNotification();
                     return;
-                }
-                else
-                {
-                    NotificationSubjectNull.Hide();
                 }
 
                 if (mOptionInputFields.Count < 1)
                 {
-                    NotificationOptionCount.Show();
+                    NotificationOptionCount.ShowNotification();
                     return;
                 }
 
@@ -71,18 +69,30 @@ namespace ProbabilityTest
                     if (field.text.IsNullOrEmpty())
                     {
                         isAllInput = false;
-                        break;
+                        field.transform.Find("Background").GetComponent<Image>().color = Color.red;
                     }
                 }
 
                 if (isAllInput == false)
                 {
-                    NotificationOptionNull.Show();
+                    NotificationOptionNull.ShowNotification();
                     return;
                 }
-                else
+
+                for (int i = 0; i < mOptionInputFields.Count - 1; i++)
                 {
-                    NotificationOptionNull.Hide();
+                    for (int j = i + 1; j < mOptionInputFields.Count; j++)
+                    {
+                        if (mOptionInputFields[i].text == mOptionInputFields[j].text)
+                        {
+                            NotificationOptionSame.ShowNotification();
+                            mOptionInputFields[i].transform.Find("Background").GetComponent<Image>().color = Color.red;
+                            mOptionInputFields[j].transform.Find("Background").GetComponent<Image>().color = Color.red;
+                            mSameTextInputFields.Add(mOptionInputFields[i]);
+                            mSameTextInputFields.Add(mOptionInputFields[j]);
+                            return;
+                        }
+                    }
                 }
 
                 // 给主题和样本空间名赋值
@@ -120,13 +130,17 @@ namespace ProbabilityTest
                 .SiblingIndex(Content.childCount - 3)
                 .Self(self =>
                 {
-                    self.OptionInputField.onEndEdit.AddListener(optionName =>
-                    {
-                        if (optionName!=null)
-                            NotificationOptionNull.Hide();
-                    });
                     // 添加输入框到列表
                     mOptionInputFields.Add(self.OptionInputField);
+                    self.OptionInputField.onEndEdit.AddListener(optionName =>
+                    {
+                        self.OptionInputField.transform.Find("Background").GetComponent<Image>().color = mOriginalOptionBGColor;
+
+                        foreach (var inputField in mSameTextInputFields.Where(f => f != null))
+                        {
+                            inputField.transform.Find("Background").GetComponent<Image>().color = mOriginalOptionBGColor;
+                        }
+                    });
 
                     self.Label.text = "选项 " + mOptionIndex;
                     mTMPOptionLabels.Add(self.Label);

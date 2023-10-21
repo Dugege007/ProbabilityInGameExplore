@@ -16,7 +16,6 @@ namespace ProbabilityTest
                 mScore = 0f;
                 foreach (Focus focus in Focuses)
                     mScore += focus.Score;
-                Debug.Log("选项 " + Name + " 得分：" + Score);
                 return mScore;
             }
         }
@@ -28,7 +27,6 @@ namespace ProbabilityTest
                 mMaxScore = 0f;
                 foreach (SamplePoint point in Global.SampleSpace.SamplePoints)
                     mMaxScore += point.Value * point.MaxValue;
-                Debug.Log("选项 " + Name + " 总分：" + MaxScore);
                 return mMaxScore;
             }
         }

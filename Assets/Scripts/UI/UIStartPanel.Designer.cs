@@ -5,7 +5,7 @@ using QFramework;
 
 namespace ProbabilityTest
 {
-	// Generate Id:27eed060-a544-4116-a6fb-543f19421e6d
+	// Generate Id:a12c07fe-8271-4acc-8e04-af5475455724
 	public partial class UIStartPanel
 	{
 		public const string Name = "UIStartPanel";
@@ -21,11 +21,13 @@ namespace ProbabilityTest
 		[SerializeField]
 		public UnityEngine.UI.Button NextBtn;
 		[SerializeField]
-		public RectTransform NotificationSubjectNull;
+		public RainbowArt.CleanFlatUI.Notification NotificationSubjectNull;
 		[SerializeField]
-		public RectTransform NotificationOptionCount;
+		public RainbowArt.CleanFlatUI.Notification NotificationOptionCount;
 		[SerializeField]
-		public RectTransform NotificationOptionNull;
+		public RainbowArt.CleanFlatUI.Notification NotificationOptionNull;
+		[SerializeField]
+		public RainbowArt.CleanFlatUI.Notification NotificationOptionSame;
 		
 		private UIStartPanelData mPrivateData = null;
 		
@@ -39,6 +41,7 @@ namespace ProbabilityTest
 			NotificationSubjectNull = null;
 			NotificationOptionCount = null;
 			NotificationOptionNull = null;
+			NotificationOptionSame = null;
 			
 			mData = null;
 		}

@@ -4,6 +4,7 @@ using QFramework;
 using TMPro;
 using System.Collections.Generic;
 using QAssetBundle;
+using System.Linq;
 
 namespace ProbabilityTest
 {
@@ -17,6 +18,9 @@ namespace ProbabilityTest
         private List<Slider> mFocusSliders = new List<Slider>();
         private List<TMP_Text> mTMPFocusLabels = new List<TMP_Text>();
 
+        private Color mOriginalFocusBGColor = new Color(77f / 255, 89f / 255, 89f / 255);
+        private List<TMP_InputField> mSameTextInputFields = new List<TMP_InputField>();
+
         protected override void OnInit(IUIData uiData = null)
         {
             mData = uiData as UIFocusesPanelData ?? new UIFocusesPanelData();
@@ -24,6 +28,9 @@ namespace ProbabilityTest
 
             // 隐藏 关注点模板
             FocusHolderTemplete.Hide();
+            NotificationFocusNull.Hide();
+            NotificationFocusCount.Hide();
+            NotificationFocusSame.Hide();
 
             // 展示之前输入的信息
             SetInfoText();
@@ -43,6 +50,44 @@ namespace ProbabilityTest
             {
                 AudioKit.PlaySound(Sfx.CLICK);
 
+                bool isAllInput = true;
+                foreach (var field in mFocusInputFields)
+                {
+                    if (field.text.IsNullOrEmpty())
+                    {
+                        isAllInput = false;
+                        field.transform.Find("Background").GetComponent<Image>().color = Color.red;
+                    }
+                }
+
+                if (isAllInput == false)
+                {
+                    NotificationFocusNull.ShowNotification();
+                    return;
+                }
+
+                if (mFocusInputFields.Count < 1)
+                {
+                    NotificationFocusCount.ShowNotification();
+                    return;
+                }
+
+                for (int i = 0; i < mFocusInputFields.Count - 1; i++)
+                {
+                    for (int j = i + 1; j < mFocusInputFields.Count; j++)
+                    {
+                        if (mFocusInputFields[i].text == mFocusInputFields[j].text)
+                        {
+                            NotificationFocusSame.ShowNotification();
+                            mFocusInputFields[i].transform.Find("Background").GetComponent<Image>().color = Color.red;
+                            mFocusInputFields[j].transform.Find("Background").GetComponent<Image>().color = Color.red;
+                            mSameTextInputFields.Add(mFocusInputFields[i]);
+                            mSameTextInputFields.Add(mFocusInputFields[j]);
+                            return;
+                        }
+                    }
+                }
+
                 // 清空样本空间中的样本点
                 Global.SampleSpace.SamplePoints.Clear();
 
@@ -53,7 +98,7 @@ namespace ProbabilityTest
                     Debug.Log("已添加：" + Global.SampleSpace.SamplePoints[i].Name + ": " + Global.SampleSpace.SamplePoints[i].Value);
                 }
 
-                for (int i = 0;i < Global.Subject.Options.Count; i++)
+                for (int i = 0; i < Global.Subject.Options.Count; i++)
                 {
                     for (int j = 0; j < mFocusInputFields.Count; j++)
                     {
@@ -114,16 +159,16 @@ namespace ProbabilityTest
                     Slider slider = self.FocusSlider;
                     // 添加滑动条到列表
                     mFocusSliders.Add(slider);
-                    // 禁用滑动条
-                    slider.enabled = false;
 
-                    // 当输入框不为空时，解锁滑动条
+                    // 监听输入框
                     inputField.onEndEdit.AddListener(focusName =>
                     {
-                        if (focusName == "")
-                            slider.enabled = false;
-                        else
-                            slider.enabled = true;
+                        inputField.transform.Find("Background").GetComponent<Image>().color = mOriginalFocusBGColor;
+
+                        foreach (var field in mSameTextInputFields.Where(f => f != null))
+                        {
+                            field.transform.Find("Background").GetComponent<Image>().color = mOriginalFocusBGColor;
+                        }
                     });
 
                     self.RemoveBtn.onClick.AddListener(() =>

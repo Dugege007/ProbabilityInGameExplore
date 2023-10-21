@@ -56,7 +56,7 @@ namespace ProbabilityTest
                         optionHolder.OptionLabel.text = "No." + (i + 1) +"\r\n" +
                             "<b><size=54>" + sortedOptions[i].Name + "</size></b>";
                         // 显示选项得分
-                        optionHolder.OptionScoreText.text = "<b>总分：</b>" + sortedOptions[i].Score.ToString("F1");
+                        optionHolder.OptionScoreText.text = "<b>总分："  + sortedOptions[i].Score.ToString("F1") + "</b>" + " / " + sortedOptions[i].MaxScore.ToString("F1");
                         // 显示选项百分比
                         optionHolder.OptionPercentText.text = (sortedOptions[i].Percent * 100f).ToString("F1") + "%";
 
@@ -68,8 +68,10 @@ namespace ProbabilityTest
                             FocusScoreHolderTemplete.InstantiateWithParent(optionHolder)
                                 .Self(focusHolder =>
                                 {
-                                    focusHolder.FocusScoreText.text = "<b>" + sortedFocuses[j].Name + "：</b>" + 
-                                        sortedFocuses[j].Score.ToString("F1");
+                                    // 显示关注点得分
+                                    focusHolder.FocusScoreText.text = "<b>" + sortedFocuses[j].Name + 
+                                        sortedFocuses[j].Score.ToString("F1") + "：</b>" + " / " + sortedFocuses[j].MaxScore.ToString("F1");
+                                    // 显示关注点百分比
                                     focusHolder.FocusPercentText.text = (sortedFocuses[j].Percent * 100f).ToString("F1") + "%";
                                 })
                                 .Show();

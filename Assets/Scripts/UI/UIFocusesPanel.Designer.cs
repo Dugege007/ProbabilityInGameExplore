@@ -5,7 +5,7 @@ using QFramework;
 
 namespace ProbabilityTest
 {
-	// Generate Id:5d2f7807-1b73-47c2-adf0-0893ebd53677
+	// Generate Id:0f409296-7546-45ec-8790-2a2ffbc28818
 	public partial class UIFocusesPanel
 	{
 		public const string Name = "UIFocusesPanel";
@@ -20,6 +20,12 @@ namespace ProbabilityTest
 		public UnityEngine.UI.Button AddFocusBtn;
 		[SerializeField]
 		public UnityEngine.UI.Button NextBtn;
+		[SerializeField]
+		public RainbowArt.CleanFlatUI.Notification NotificationFocusNull;
+		[SerializeField]
+		public RainbowArt.CleanFlatUI.Notification NotificationFocusCount;
+		[SerializeField]
+		public RainbowArt.CleanFlatUI.Notification NotificationFocusSame;
 		
 		private UIFocusesPanelData mPrivateData = null;
 		
@@ -30,6 +36,9 @@ namespace ProbabilityTest
 			InfoText = null;
 			AddFocusBtn = null;
 			NextBtn = null;
+			NotificationFocusNull = null;
+			NotificationFocusCount = null;
+			NotificationFocusSame = null;
 			
 			mData = null;
 		}
