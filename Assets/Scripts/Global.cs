@@ -8,6 +8,7 @@ namespace ProbabilityTest
     public class Global : Architecture<Global>
     {
         public static Subject Subject = new Subject();
+        public static Subject HistorySubject = new Subject();
 
         protected override void Init()
         {

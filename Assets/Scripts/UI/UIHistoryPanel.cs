@@ -65,7 +65,7 @@ namespace ProbabilityTest
                     {
                         AudioKit.PlaySound(Sfx.CLICK);
 
-                        Global.Subject = subject;
+                        Global.HistorySubject = subject;
 
                         CloseSelf();
                         UIKit.OpenPanel<UIStartPanel>();
@@ -97,7 +97,7 @@ namespace ProbabilityTest
                     Debug.Log("Reading file: " + file);
 
                     // 读取文件内容
-                    string json = File.ReadAllText(subjectPath);
+                    string json = File.ReadAllText(file);  // 注意这里改为 file
                     Subject subject = JsonConvert.DeserializeObject<Subject>(json);
 
                     CreateSubjectHistoryBtn(subject);
@@ -108,7 +108,6 @@ namespace ProbabilityTest
                 // 异常处理
                 Debug.Log("An error occurred: " + e.Message);
             }
-
         }
 
         public IArchitecture GetArchitecture()

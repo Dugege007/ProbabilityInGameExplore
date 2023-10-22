@@ -116,29 +116,28 @@ namespace ProbabilityTest
         private void CreateRatingHolder()
         {
             Option option = Global.Subject.Options[0];
-            SampleSpace sampleSpace = Global.Subject.SampleSpace;
+            List<SamplePoint> samplePoints = Global.Subject.SampleSpace.SamplePoints;
 
-            for (int i = 0; i < sampleSpace.SamplePoints.Count; i++)
+            for (int i = 0; i < samplePoints.Count; i++)
             {
-                SamplePoint point = sampleSpace.SamplePoints[i];
-
                 RatingHolderTemplete.InstantiateWithParent(OptionRatingHolder)
                     .Self(self =>
                     {
                         mRatingSliders.Add(self.RatingSlider);
                         mRatingHolderTempletes.Add(self);
 
-                        self.RatingLabel.text = point.Name;
+                        self.RatingLabel.text = samplePoints[i].Name;
+                        //Debug.Log(option.GetFocusByName(samplePoints[i].Name).Value);
+                        self.RatingSlider.value = option.GetFocusByName(samplePoints[i].Name).Value;
+                        self.SliderText.text = option.GetFocusByName(samplePoints[i].Name).Value.ToString("F1");
 
                         self.RatingSlider.onValueChanged.AddListener(value =>
                         {
                             // Ω‚À¯—°œÓ
                             option.IsUnLocked = true;
-
                             self.SliderText.text = value.ToString("F1");
+                            CheckAllOptionsUnLocked();
                         });
-
-                        self.RatingSlider.value = option.GetFocusByName(point.Name).Value;
                     })
                     .Show();
             }

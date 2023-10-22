@@ -36,10 +36,11 @@ namespace ProbabilityTest
             SetInfoText();
 
             Subject subject = Global.Subject;
+            Subject historySubject = Global.HistorySubject;
 
-            if (subject.SampleSpace != null)
+            if (historySubject.IsHistory)
             {
-                foreach (SamplePoint point in subject.SampleSpace.SamplePoints)
+                foreach (SamplePoint point in historySubject.SampleSpace.SamplePoints)
                 {
                     CreateFocusHolder(point.Name, point.Value);
                 }
@@ -84,27 +85,26 @@ namespace ProbabilityTest
                 }
 
                 // 如果是历史记录
-                if (subject.IsHistory)
+                if (historySubject.IsHistory)
                 {
                     // SampleSpace 缓存
-                    SampleSpace sampleSpaceCache = new SampleSpace(subject.Name, CalMode.Weight);
+                    subject.SampleSpace.SamplePoints.Clear();
 
                     // 在样本空间的样本点列表中添加关注点
                     foreach (var inputField in mFocusInputFields)
                     {
                         // 如果在选项中可以找到已有的关注点
-                        if (subject.Options[0].GetFocusByName(inputField.text) != null)
+                        if (historySubject.SampleSpace.GetSamplePointByName(inputField.text) != null)
                         {
                             // 添加该关注点到缓存中
-                            sampleSpaceCache.SamplePoints.Add(subject.SampleSpace.GetSamplePointByName(inputField.text));
+                            subject.SampleSpace.SamplePoints.Add(historySubject.SampleSpace.GetSamplePointByName(inputField.text));
                         }
                         else
                         {
                             // 找不到，则添加一个新的关注点
-                            sampleSpaceCache.AddSamplePoint(inputField.text);
+                            subject.SampleSpace.AddSamplePoint(inputField.text);
                         }
                     }
-                    subject.SampleSpace = sampleSpaceCache;
                     Debug.Log("从历史记录中提取 SampleSpace");
                 }
                 // 否则
@@ -186,6 +186,7 @@ namespace ProbabilityTest
                     // 获取滑动条
                     Slider slider = self.FocusSlider;
                     slider.value = focusValue;
+                    self.SliderText.text = focusValue.ToString("F1");
                     // 添加滑动条到列表
                     mFocusSliders.Add(slider);
 

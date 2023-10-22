@@ -32,10 +32,14 @@ namespace ProbabilityTest
             NotificationOptionNull.Hide();
             NotificationOptionSame.Hide();
 
-            if (Global.Subject != null)
+            Subject subject = Global.Subject;
+            Subject historySubject = Global.HistorySubject;
+
+            if (historySubject.IsHistory)
             {
-                SubjectInputField.text = Global.Subject.Name;
-                foreach (Option option in Global.Subject.Options)
+                SubjectInputField.text = historySubject.Name;
+                Label.Hide();
+                foreach (Option option in historySubject.Options)
                 {
                     CreateOptionInputField(option.Name);
                 }
@@ -93,28 +97,26 @@ namespace ProbabilityTest
                     }
                 }
 
-                if (Global.Subject == null)
-                    Global.Subject = new Subject();
-
                 // 给主题和样本空间名赋值
-                Global.Subject.Name = SubjectInputField.text;
+                subject.Name = SubjectInputField.text;
 
-                if (Global.Subject.IsHistory)
+                if (historySubject.IsHistory)
                 {
-                    Subject subjectCache = new Subject(SubjectInputField.text);
+                    subject.Options.Clear();
 
                     foreach (var inputField in mOptionInputFields)
                     {
-                        if (Global.Subject.GetOptionByName(inputField.text) != null)
+                        if (historySubject.GetOptionByName(inputField.text) != null)
                         {
-                            subjectCache.Options.Add(Global.Subject.GetOptionByName(inputField.text));
+                            subject.Options.Add(historySubject.GetOptionByName(inputField.text));
                         }
                         else
                         {
-                            subjectCache.AddOption(inputField.text);
+                            subject.AddOption(inputField.text);
+                            Debug.Log("添加新 Option：" + inputField.text);
                         }
                     }
-                    Global.Subject = subjectCache;
+                    Debug.Log("从历史记录中提取 Options");
                 }
                 else
                 {

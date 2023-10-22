@@ -35,26 +35,25 @@ namespace ProbabilityTest
 
         public void SaveObject<T>(T obj, string folder, string objName, Action onComplete)
         {
-            string fileName = "";
-            if (folder.IsNullOrEmpty())
-                fileName = DateTime.Now.ToString("G").Replace(':', '-') + "_" + objName + ".json"; // 替换冒号，因为文件名不能包含冒号
-            else
-                fileName = folder + DateTime.Now.ToString("G").Replace(':', '-') + "_" + objName + ".json";
-            string path = Path.Combine(Application.persistentDataPath, fileName);
+            string fileName = DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss") + "_" + objName + ".json"; // 替换冒号和空格
+            string folderPath = Path.Combine(Application.persistentDataPath, folder);
+            string filePath = Path.Combine(folderPath, fileName);
 
-            if (!File.Exists(path))
+            // 确保目录存在
+            if (!Directory.Exists(folderPath))
             {
-                File.Create(path).Dispose(); // 使用Dispose确保文件流立即关闭
+                Directory.CreateDirectory(folderPath);
             }
 
-            File.WriteAllText(path, JsonConvert.SerializeObject(obj, Formatting.Indented));
+            // 创建并写入文件
+            File.WriteAllText(filePath, JsonConvert.SerializeObject(obj, Formatting.Indented));
             Debug.Log(obj + "已保存" + JsonConvert.SerializeObject(obj, Formatting.Indented));
-
-            onComplete?.Invoke(); // 调用回调
 
 #if UNITY_EDITOR
             AssetDatabase.Refresh();
 #endif
+
+            onComplete?.Invoke(); // 调用回调
         }
 
         public void LoadObject<T>(T obj, string fileName)
