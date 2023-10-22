@@ -95,12 +95,9 @@ namespace ProbabilityTest
 
                 if (Global.Subject == null)
                     Global.Subject = new Subject();
-                if (Global.SampleSpace == null)
-                    Global.SampleSpace = new SampleSpace(Global.Subject.Name, CalMode.Weight);
 
                 // 给主题和样本空间名赋值
                 Global.Subject.Name = SubjectInputField.text;
-                Global.SampleSpace.Name = SubjectInputField.text;
 
                 if (Global.Subject.IsHistory)
                 {

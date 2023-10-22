@@ -8,18 +8,18 @@ namespace ProbabilityTest
     public class Subject
     {
         public string Name;
-        public string Date = DateTime.Now.ToString("G");
-        public string Key { get { return Name + Date; } }
         public string Description;
 
         public bool IsHistory { get; set; } = false;
 
+        public SampleSpace SampleSpace { get; set; }
         public List<Option> Options { get; set; }
 
         public Subject(string name = "SubjectName")
         {
             Name = name;
             Options = new List<Option>();  // 初始化列表
+            SampleSpace = new SampleSpace("SampleSpace", CalMode.Weight);
         }
 
         public void AddOption(string optionName)

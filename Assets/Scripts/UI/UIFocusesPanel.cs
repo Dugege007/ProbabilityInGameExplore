@@ -35,9 +35,11 @@ namespace ProbabilityTest
             // 展示之前输入的信息
             SetInfoText();
 
-            if (Global.SampleSpace != null)
+            Subject subject = Global.Subject;
+
+            if (subject.SampleSpace != null)
             {
-                foreach (SamplePoint point in Global.SampleSpace.SamplePoints)
+                foreach (SamplePoint point in subject.SampleSpace.SamplePoints)
                 {
                     CreateFocusHolder(point.Name, point.Value);
                 }
@@ -82,19 +84,19 @@ namespace ProbabilityTest
                 }
 
                 // 如果是历史记录
-                if (Global.Subject.IsHistory)
+                if (subject.IsHistory)
                 {
                     // SampleSpace 缓存
-                    SampleSpace sampleSpaceCache = new SampleSpace(Global.Subject.Name, CalMode.Weight);
+                    SampleSpace sampleSpaceCache = new SampleSpace(subject.Name, CalMode.Weight);
 
                     // 在样本空间的样本点列表中添加关注点
                     foreach (var inputField in mFocusInputFields)
                     {
                         // 如果在选项中可以找到已有的关注点
-                        if (Global.Subject.Options[0].GetFocusByName(inputField.text) != null)
+                        if (subject.Options[0].GetFocusByName(inputField.text) != null)
                         {
                             // 添加该关注点到缓存中
-                            sampleSpaceCache.SamplePoints.Add(Global.SampleSpace.GetSamplePointByName(inputField.text));
+                            sampleSpaceCache.SamplePoints.Add(subject.SampleSpace.GetSamplePointByName(inputField.text));
                         }
                         else
                         {
@@ -102,31 +104,32 @@ namespace ProbabilityTest
                             sampleSpaceCache.AddSamplePoint(inputField.text);
                         }
                     }
-                    Global.SampleSpace = sampleSpaceCache;
+                    subject.SampleSpace = sampleSpaceCache;
+                    Debug.Log("从历史记录中提取 SampleSpace");
                 }
                 // 否则
                 else
                 {
                     // 清空样本空间中的样本点
-                    Global.SampleSpace.SamplePoints.Clear();
+                    subject.SampleSpace.SamplePoints.Clear();
                     // 清空各选项中的关注点
-                    foreach(Option option in Global.Subject.Options)
+                    foreach(Option option in subject.Options)
                         option.Focuses.Clear();
 
                     // 根据用户操作添加样本点
                     for (int i = 0; i < mFocusInputFields.Count; i++)
                     {
-                        Global.SampleSpace.AddSamplePoint(mFocusInputFields[i].text, mFocusSliders[i].value);
-                        Debug.Log("已添加：" + Global.SampleSpace.SamplePoints[i].Name + ": " + Global.SampleSpace.SamplePoints[i].Value);
+                        subject.SampleSpace.AddSamplePoint(mFocusInputFields[i].text, mFocusSliders[i].value);
+                        Debug.Log("已添加：" + subject.SampleSpace.SamplePoints[i].Name + ": " + subject.SampleSpace.SamplePoints[i].Value);
                     }
                 }
 
                 // 为所有选项添加关注点
-                for (int i = 0; i < Global.Subject.Options.Count; i++)
+                for (int i = 0; i < subject.Options.Count; i++)
                 {
                     for (int j = 0; j < mFocusInputFields.Count; j++)
                     {
-                        Global.Subject.Options[i].AddFocus(mFocusInputFields[j].text);
+                        subject.Options[i].AddFocus(mFocusInputFields[j].text);
                     }
                 }
 

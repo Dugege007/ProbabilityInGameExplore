@@ -1,35 +1,20 @@
 using UnityEngine;
-using UnityEngine.UI;
 using QFramework;
 using System.Linq;
 using QAssetBundle;
 using System.Collections.Generic;
-using TMPro;
-using Newtonsoft.Json;
-using UnityEditor;
-using System.IO;
 
 namespace ProbabilityTest
 {
     public class UIResultPanelData : UIPanelData
     {
     }
-    public partial class UIResultPanel : UIPanel
+    public partial class UIResultPanel : UIPanel, IController, ICanSave
     {
         protected override void OnInit(IUIData uiData = null)
         {
             mData = uiData as UIResultPanelData ?? new UIResultPanelData();
             // please add init code here
-
-            foreach (var option in Global.Subject.Options)
-            {
-                Debug.Log("Global.Subject.Options：" + option.Name);
-            }
-
-            foreach (var point in Global.SampleSpace.SamplePoints)
-            {
-                Debug.Log("Global.SampleSpace.SamplePoints：" + point.Name);
-            }
 
             OptionResultHolderTemplete.Hide();
             FocusScoreHolderTemplete.Hide();
@@ -44,14 +29,17 @@ namespace ProbabilityTest
                 AudioKit.PlaySound(Sfx.CLICK);
 
                 Global.Subject.IsHistory = true;
-                Global.Subject.Date = System.DateTime.Now.ToString("G");
-                Global.SampleSpace.Date = Global.Subject.Date;
 
-                SaveHistory(Global.SubjectHistory, "SubjectHistory.json", Global.Subject, Global.Subject.Key);
-                SaveHistory(Global.SampleSpaceHistory, "SampleSpaceHistory.json", Global.SampleSpace, Global.SampleSpace.Key);
+                foreach (var option in Global.Subject.Options)
+                {
+                    Debug.Log("Global.Subject.Options：" + option.Name);
+                }
 
-                CloseSelf();
-                UIKit.OpenPanel<UIHistoryPanel>();
+                this.GetSystem<SaveSystem>().SaveObject(Global.Subject,"Subject/", Global.Subject.Name, () =>
+                {
+                    CloseSelf();
+                    UIKit.OpenPanel<UIHistoryPanel>();
+                });
             });
 
             BackToHomeBtn.onClick.AddListener(() =>
@@ -111,46 +99,27 @@ namespace ProbabilityTest
             }
         }
 
-        // 数据保存
-        private void SaveHistory<T>(Dictionary<string, T> history, string historyFileName, T obj, string objKey)
-        {
-            if (history.ContainsKey(objKey) == false)
-                history.Add(objKey, obj);
-            else
-                history[objKey] = obj;
-
-            //string jsonData = JsonConvert.SerializeObject(history);
-            string path = Path.Combine(Application.persistentDataPath, historyFileName);
-            File.WriteAllText(path, JsonConvert.SerializeObject(history));
-            //string path = Application.dataPath + "/Data/your_file.json";
-            if (File.Exists(path) == false)
-                File.Create(path);
-            File.WriteAllText(path, JsonConvert.SerializeObject(history));
-            AssetDatabase.Refresh();
-
-            //// PlayerPrefs.SetString() 可以将游戏数据和Json数据以键值对的形式匹配，并保存在磁盘上
-            //PlayerPrefs.SetString(historyKey, jsonData);
-            //// 保存数据
-            //PlayerPrefs.Save();
-        }
-
-        //private void SaveHistory<T>(Dictionary<string, T> history, T obj, string key)
-        //{
-        //    history.Add(key, obj);
-
-        //    string jsonData = JsonConvert.SerializeObject(obj);
-        //    // PlayerPrefs.SetString() 可以将游戏数据和Json数据以键值对的形式匹配，并保存在磁盘上
-        //    PlayerPrefs.SetString(key, jsonData);
-        //    // 保存数据
-        //    PlayerPrefs.Save();
-        //}
-
         protected override void OnHide()
         {
         }
 
         protected override void OnClose()
         {
+        }
+
+        public void Save()
+        {
+            
+        }
+
+        public void Load()
+        {
+            
+        }
+
+        public IArchitecture GetArchitecture()
+        {
+            return Global.Interface;
         }
     }
 }

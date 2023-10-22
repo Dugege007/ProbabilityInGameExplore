@@ -25,7 +25,7 @@ namespace ProbabilityTest
             get
             {
                 mMaxScore = 0f;
-                foreach (SamplePoint point in Global.SampleSpace.SamplePoints)
+                foreach (SamplePoint point in Global.Subject.SampleSpace.SamplePoints)
                     mMaxScore += point.Value * point.MaxValue;
                 return mMaxScore;
             }

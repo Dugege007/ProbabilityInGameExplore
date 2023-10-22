@@ -8,17 +8,10 @@ namespace ProbabilityTest
     public class Global : Architecture<Global>
     {
         public static Subject Subject = new Subject();
-        // 主题的样本空间，暂时使用权重
-        public static SampleSpace SampleSpace = new SampleSpace(Subject.Name, CalMode.Weight);
-
-        public static Dictionary<string, Subject> SubjectHistory = new Dictionary<string, Subject>();
-        public static string SubjectHistoryKey = "subject_history";
-
-        public static Dictionary<string, SampleSpace> SampleSpaceHistory = new Dictionary<string, SampleSpace>();
-        public static string SampleSpaceHistoryKey = "sample_space_history";
 
         protected override void Init()
         {
+            this.RegisterSystem(new SaveSystem());
         }
 
         [RuntimeInitializeOnLoadMethod]
@@ -40,7 +33,6 @@ namespace ProbabilityTest
         public static void ResetData()
         {
             Subject = new Subject();
-            SampleSpace = new SampleSpace(Subject.Name, CalMode.Weight);
         }
 
     }

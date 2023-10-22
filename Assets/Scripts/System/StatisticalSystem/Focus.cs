@@ -16,7 +16,7 @@ namespace ProbabilityTest
         {
             get
             {
-                mMaxScore = Global.SampleSpace.GetSamplePointByName(Name).Value * Global.SampleSpace.GetSamplePointByName(Name).MaxValue;
+                mMaxScore = Global.Subject.SampleSpace.GetSamplePointByName(Name).Value * Global.Subject.SampleSpace.GetSamplePointByName(Name).MaxValue;
                 return mMaxScore;
             }
         }
@@ -25,7 +25,7 @@ namespace ProbabilityTest
         {
             get
             {
-                mScore = Global.SampleSpace.GetSamplePointByName(Name).Value * mValue;
+                mScore = Global.Subject.SampleSpace.GetSamplePointByName(Name).Value * mValue;
                 return mScore;
             }
         }

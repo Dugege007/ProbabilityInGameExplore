@@ -19,8 +19,7 @@ namespace ProbabilityTest
             {
                 AudioKit.PlaySound(Sfx.CLICK);
 
-                Global.Subject = null;
-                Global.SampleSpace = null;
+                Global.Subject = new Subject();
 
                 CloseSelf();
                 UIKit.OpenPanel<UIStartPanel>();

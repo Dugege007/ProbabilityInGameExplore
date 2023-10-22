@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using static UnityEngine.Rendering.DebugUI;
 
 namespace ProbabilityTest
 {
@@ -19,11 +18,11 @@ namespace ProbabilityTest
         public string Key { get { return Name + Date; } }
 
         public List<SamplePoint> SamplePoints = new List<SamplePoint>();
-        public CalMode Mode = CalMode.Percent;
+        public CalMode Mode = CalMode.Weight;
 
         public float TotalWeight = 0;
 
-        public SampleSpace(string name = "DefaultSampleSpace", CalMode mode = CalMode.Percent)
+        public SampleSpace(string name = "DefaultSampleSpace", CalMode mode = CalMode.Weight)
         {
             Name = name;
             Mode = mode;

@@ -32,11 +32,6 @@ namespace ProbabilityTest
                 Debug.Log("Global.Subject.Options£º" + option.Name);
             }
 
-            foreach (var point in Global.SampleSpace.SamplePoints)
-            {
-                Debug.Log("Global.SampleSpace.SamplePoints£º" + point.Name);
-            }
-
             RatingHolderTemplete.Hide();
             ComputeBtn.Hide();
 
@@ -121,10 +116,11 @@ namespace ProbabilityTest
         private void CreateRatingHolder()
         {
             Option option = Global.Subject.Options[0];
+            SampleSpace sampleSpace = Global.Subject.SampleSpace;
 
-            for (int i = 0; i < Global.SampleSpace.SamplePoints.Count; i++)
+            for (int i = 0; i < sampleSpace.SamplePoints.Count; i++)
             {
-                SamplePoint point = Global.SampleSpace.SamplePoints[i];
+                SamplePoint point = sampleSpace.SamplePoints[i];
 
                 RatingHolderTemplete.InstantiateWithParent(OptionRatingHolder)
                     .Self(self =>
