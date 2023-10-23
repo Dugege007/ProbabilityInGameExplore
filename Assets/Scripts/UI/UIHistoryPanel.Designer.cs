@@ -5,7 +5,7 @@ using QFramework;
 
 namespace ProbabilityTest
 {
-	// Generate Id:e289d959-9983-4091-8698-52a73f4f3e7e
+	// Generate Id:7f49f726-c3ff-4550-81d0-145da63d8c16
 	public partial class UIHistoryPanel
 	{
 		public const string Name = "UIHistoryPanel";
@@ -16,6 +16,8 @@ namespace ProbabilityTest
 		public UnityEngine.UI.Button NewSubjectBtn;
 		[SerializeField]
 		public HistoryBtnTemplete HistoryBtnTemplete;
+		[SerializeField]
+		public NotificationOpenHistory NotificationOpenHistory;
 		
 		private UIHistoryPanelData mPrivateData = null;
 		
@@ -24,6 +26,7 @@ namespace ProbabilityTest
 			Content = null;
 			NewSubjectBtn = null;
 			HistoryBtnTemplete = null;
+			NotificationOpenHistory = null;
 			
 			mData = null;
 		}

@@ -24,6 +24,7 @@ namespace ProbabilityTest
             // please add init code here
 
             HistoryBtnTemplete.Hide();
+            NotificationOpenHistory.Hide();
 
             Load();
 
@@ -31,6 +32,25 @@ namespace ProbabilityTest
             {
                 AudioKit.PlaySound(Sfx.CLICK);
 
+                Global.ResetData();
+
+                CloseSelf();
+                Global.IsTemporarilySave.Value = false;
+                UIKit.OpenPanel<UIStartPanel>();
+            });
+
+            NotificationOpenHistory.CloseBtn.onClick.AddListener(() =>
+            {
+                NotificationOpenHistory.Hide();
+            });
+
+            NotificationOpenHistory.CancelBtn.onClick.AddListener(() =>
+            {
+                NotificationOpenHistory.Hide();
+            });
+
+            NotificationOpenHistory.YesBtn.onClick.AddListener(() =>
+            {
                 Global.ResetData();
 
                 CloseSelf();
@@ -62,16 +82,6 @@ namespace ProbabilityTest
                     StringBuilder descriptionStr = new StringBuilder("说明：");
                     descriptionStr.Append(historySubject.Description);
                     self.DescriptionText.text = descriptionStr.ToString();
-
-                    //StringBuilder optionsStr = new StringBuilder("选项：");
-                    //foreach (Option option in historySubject.Options)
-                    //    optionsStr.Append(option.Name).Append("；");
-                    //self.OptionsText.text = optionsStr.ToString();
-
-                    //StringBuilder focusesStr = new StringBuilder("关注点：");
-                    //foreach (Focus focus in historySubject.Options[0].Focuses)
-                    //    focusesStr.Append(focus.Name).Append("；");
-                    //self.FocusesText.text = focusesStr.ToString();
 
                     self.GetComponent<Button>().onClick.AddListener(() =>
                     {

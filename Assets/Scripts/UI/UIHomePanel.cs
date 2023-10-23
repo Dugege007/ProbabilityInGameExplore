@@ -62,6 +62,11 @@ namespace ProbabilityTest
                 UIKit.OpenPanel<UIStartPanel>();
             });
 
+            NotificationNewSubject.CloseBtn.onClick.AddListener(() =>
+            {
+                NotificationNewSubject.Hide();
+            });
+
             NotificationNewSubject.CancelBtn.onClick.AddListener(() =>
             {
                 NotificationNewSubject.Hide();
