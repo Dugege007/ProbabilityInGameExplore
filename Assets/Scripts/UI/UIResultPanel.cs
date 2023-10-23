@@ -46,6 +46,8 @@ namespace ProbabilityTest
             {
                 AudioKit.PlaySound(Sfx.CLICK);
 
+                Global.IsTemporarilySave.Value = true;
+
                 CloseSelf();
                 UIKit.OpenPanel<UIHomePanel>();
             });

@@ -10,6 +10,8 @@ namespace ProbabilityTest
         public static Subject Subject = new Subject();
         public static Subject HistorySubject = new Subject();
 
+        public static BindableProperty<bool> IsTemporarilySave = new(false);
+
         protected override void Init()
         {
             this.RegisterSystem(new SaveSystem());

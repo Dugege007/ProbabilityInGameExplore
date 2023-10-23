@@ -26,6 +26,21 @@ namespace ProbabilityTest
             mData = uiData as UIRatingPanelData ?? new UIRatingPanelData();
             // please add init code here
 
+            Global.IsTemporarilySave.RegisterWithInitValue(isTempSave =>
+            {
+                if (isTempSave)
+                {
+                    // º∆À„
+                    CalculateEveryFocusScore(mGlobalOptions[mOptionIndex]);
+
+                    Global.Subject.IsHistory = true;
+                    Global.HistorySubject = Global.Subject;
+                    CloseSelf();
+                    UIKit.OpenPanel<UIHomePanel>();
+                }
+
+            }).UnRegisterWhenGameObjectDestroyed(this);
+
             mGlobalOptions = Global.Subject.Options;
 
             foreach (var option in mGlobalOptions)
@@ -40,7 +55,7 @@ namespace ProbabilityTest
             RatingHolderTemplete.Hide();
             ComputeBtn.Hide();
 
-            SubjectText.text = "<b><size=60>" + Global.Subject.Name + "</size></b>\r\n";
+            SubjectText.text = Global.Subject.Name;
             RefreshOptionInfo();
             CreateRatingHolder();
 

@@ -15,14 +15,34 @@ namespace ProbabilityTest
             mData = uiData as UIHomePanelData ?? new UIHomePanelData();
             // please add init code here
 
+            NotificationNewSubject.Hide();
+
+            Global.IsTemporarilySave.RegisterWithInitValue(isTempSave =>
+            {
+                if (isTempSave)
+                    ContinueEditBtn.Show();
+                else
+                    ContinueEditBtn.Hide();
+
+            }).UnRegisterWhenGameObjectDestroyed(this);
+
+            // 新建 主题
             NewSubjectBtn.onClick.AddListener(() =>
             {
                 AudioKit.PlaySound(Sfx.CLICK);
 
-                Global.Subject = new Subject();
+                if (Global.IsTemporarilySave.Value == true)
+                {
+                    NotificationNewSubject.Show();
+                }
+                else
+                {
+                    Global.ResetData();
 
-                CloseSelf();
-                UIKit.OpenPanel<UIStartPanel>();
+                    CloseSelf();
+                    Global.IsTemporarilySave.Value = false;
+                    UIKit.OpenPanel<UIStartPanel>();
+                }
             });
 
             ViewHistoryBtn.onClick.AddListener(() =>
@@ -33,13 +53,26 @@ namespace ProbabilityTest
                 UIKit.OpenPanel<UIHistoryPanel>();
             });
 
-            ClearHistoryBtn.onClick.AddListener(() =>
+            ContinueEditBtn.onClick.AddListener(() =>
             {
                 AudioKit.PlaySound(Sfx.CLICK);
 
-                PlayerPrefs.DeleteAll();
+                CloseSelf();
+                Global.IsTemporarilySave.Value = false;
+                UIKit.OpenPanel<UIStartPanel>();
+            });
+
+            NotificationNewSubject.CancelBtn.onClick.AddListener(() =>
+            {
+                NotificationNewSubject.Hide();
+            });
+
+            NotificationNewSubject.YesBtn.onClick.AddListener(() =>
+            {
+                Global.ResetData();
 
                 CloseSelf();
+                Global.IsTemporarilySave.Value = false;
                 UIKit.OpenPanel<UIStartPanel>();
             });
         }

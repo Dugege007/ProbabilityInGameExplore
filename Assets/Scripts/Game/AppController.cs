@@ -14,6 +14,7 @@ namespace ProbabilityTest
 
         private void Start()
         {
+            UIKit.OpenPanel<UIDefaultPanel>();
             UIKit.OpenPanel<UIHomePanel>();
         }
 

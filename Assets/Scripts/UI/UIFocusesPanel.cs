@@ -33,7 +33,20 @@ namespace ProbabilityTest
             // 展示之前输入的信息
             SetInfoText();
 
-            Subject subject = Global.Subject;
+            Global.IsTemporarilySave.RegisterWithInitValue(isTempSave =>
+            {
+                if (isTempSave)
+                {
+                    // 给 Global.Subject 赋值（暂存 Subject）
+                    TemporarilySaveSubject();
+                    Global.Subject.IsHistory = true;
+                    Global.HistorySubject = Global.Subject;
+                    CloseSelf();
+                    UIKit.OpenPanel<UIHomePanel>();
+                }
+
+            }).UnRegisterWhenGameObjectDestroyed(this);
+
             Subject historySubject = Global.HistorySubject;
 
             if (historySubject.IsHistory)
@@ -82,94 +95,8 @@ namespace ProbabilityTest
                     return;
                 }
 
-                // 如果是历史记录
-                if (historySubject.IsHistory)
-                {
-                    // SampleSpace 缓存
-                    subject.SampleSpace.SamplePoints.Clear();
-                    // 替换样本点列表中的关注点
-                    foreach (var focusHolder in mFocusHolders)
-                    {
-                        // 如果在选项中可以找到已有的关注点
-                        if (historySubject.SampleSpace.GetSamplePointByName(focusHolder.FocusInputField.text) != null)
-                        {
-                            // 添加该关注点到缓存中
-                            subject.SampleSpace.SamplePoints.Add(historySubject.SampleSpace.GetSamplePointByName(focusHolder.FocusInputField.text));
-                        }
-                        else
-                        {
-                            // 找不到，则添加一个新的关注点
-                            subject.SampleSpace.AddSamplePoint(focusHolder.FocusInputField.text, focusHolder.FocusSlider.value);
-                        }
-                    }
-                    Debug.Log("subject.SampleSpace.SamplePoints: " + subject.SampleSpace.SamplePoints.Count);
-
-                    // 替换关注点列表中的关注点
-                    foreach (var option in subject.Options)
-                    {
-                        List<Focus> focusList = new List<Focus>();
-
-                        foreach (var focusHolder in mFocusHolders)
-                        {
-                            // 如果历史中此 Option 存在
-                            if (historySubject.GetOptionByName(option.Name) != null)
-                            {
-                                // 获取历史中的此 Option 的名为 inputField.text 的 Focus
-                                Focus focus = historySubject.GetOptionByName(option.Name).GetFocusByName(focusHolder.FocusInputField.text);
-
-                                // 如果在选项中可以找到已有的关注点
-                                if (focus != null)
-                                {
-                                    focusList.Add(focus);
-                                    Debug.Log("在 Option 中找到已有的 Focus");
-                                }
-                                // 如果找不到
-                                else
-                                {
-                                    // 则添加一个新的关注点
-                                    focusList.Add(new Focus(focusHolder.FocusInputField.text));
-                                    Debug.Log("已添加新的 Focus");
-                                }
-                            }
-                            // 如果历史中此 Option 不存在
-                            else
-                            {
-                                // 则在此 Option 添加一个新的关注点
-                                focusList.Add(new Focus(focusHolder.FocusInputField.text));
-                                Debug.Log("已在新 Option 中添加新的 Focus");
-                            }
-                        }
-                        option.Focuses = focusList;
-                        Debug.Log("option.Focuses.Count: " + option.Focuses.Count);
-                    }
-
-                }
-                // 否则
-                else
-                {
-                    // 清空样本空间中的样本点
-                    subject.SampleSpace.SamplePoints.Clear();
-                    // 清空各选项中的关注点
-                    foreach (Option option in subject.Options)
-                        option.Focuses.Clear();
-
-                    // 根据用户操作添加样本点
-                    for (int i = 0; i < mFocusHolders.Count; i++)
-                    {
-                        subject.SampleSpace.AddSamplePoint(mFocusHolders[i].FocusInputField.text, mFocusHolders[i].FocusSlider.value);
-
-                        Debug.Log("已添加：" + subject.SampleSpace.SamplePoints[i].Name + ": " + subject.SampleSpace.SamplePoints[i].Value);
-                    }
-
-                    // 为所有选项添加关注点
-                    for (int i = 0; i < subject.Options.Count; i++)
-                    {
-                        for (int j = 0; j < mFocusHolders.Count; j++)
-                        {
-                            subject.Options[i].AddFocus(mFocusHolders[j].FocusInputField.text);
-                        }
-                    }
-                }
+                // 给 Global.Subject 赋值（暂存 Subject）
+                TemporarilySaveSubject();
 
                 CloseSelf();
                 // 打开评分面板
@@ -188,19 +115,17 @@ namespace ProbabilityTest
         // 设置信息
         private void SetInfoText()
         {
-            string subjectNameStr = Global.Subject.Name + "\r\n\r\n";
-            string optionsListStr = "";
+            SubjectText.text = Global.Subject.Name;
 
             for (int i = 0; i < Global.Subject.Options.Count; i++)
             {
-                optionsListStr += (i + 1).ToString() + ". " + Global.Subject.Options[i].Name + "\r\n";
+                OptionTextTemplete.InstantiateWithParent(OptiontTextHolder)
+                    .Self(self =>
+                    {
+                        self.text = (i + 1).ToString() + ". " + Global.Subject.Options[i].Name;
+                    })
+                    .Show();
             }
-
-            InfoText.text = "<b><size=42>主题：</size></b>\r\n" +
-                subjectNameStr +
-                "<b><size=42>选项：</size></b>\r\n" +
-                optionsListStr +
-                " ";
         }
 
         // 创建关注点条目
@@ -254,6 +179,101 @@ namespace ProbabilityTest
                     });
                 })
                 .Show();
+        }
+
+        private void TemporarilySaveSubject()
+        {
+            Subject subject = Global.Subject;
+            Subject historySubject = Global.HistorySubject;
+
+            // 如果是历史记录
+            if (historySubject.IsHistory)
+            {
+                // SampleSpace 缓存
+                subject.SampleSpace.SamplePoints.Clear();
+                // 替换样本点列表中的关注点
+                foreach (var focusHolder in mFocusHolders)
+                {
+                    // 如果在选项中可以找到已有的关注点
+                    if (historySubject.SampleSpace.GetSamplePointByName(focusHolder.FocusInputField.text) != null)
+                    {
+                        // 添加该关注点到缓存中
+                        subject.SampleSpace.SamplePoints.Add(historySubject.SampleSpace.GetSamplePointByName(focusHolder.FocusInputField.text));
+                    }
+                    else
+                    {
+                        // 找不到，则添加一个新的关注点
+                        subject.SampleSpace.AddSamplePoint(focusHolder.FocusInputField.text, focusHolder.FocusSlider.value);
+                    }
+                }
+                Debug.Log("subject.SampleSpace.SamplePoints: " + subject.SampleSpace.SamplePoints.Count);
+
+                // 替换关注点列表中的关注点
+                foreach (var option in subject.Options)
+                {
+                    List<Focus> focusList = new List<Focus>();
+
+                    foreach (var focusHolder in mFocusHolders)
+                    {
+                        // 如果历史中此 Option 存在
+                        if (historySubject.GetOptionByName(option.Name) != null)
+                        {
+                            // 获取历史中的此 Option 的名为 inputField.text 的 Focus
+                            Focus focus = historySubject.GetOptionByName(option.Name).GetFocusByName(focusHolder.FocusInputField.text);
+
+                            // 如果在选项中可以找到已有的关注点
+                            if (focus != null)
+                            {
+                                focusList.Add(focus);
+                                Debug.Log("在 Option 中找到已有的 Focus");
+                            }
+                            // 如果找不到
+                            else
+                            {
+                                // 则添加一个新的关注点
+                                focusList.Add(new Focus(focusHolder.FocusInputField.text));
+                                Debug.Log("已添加新的 Focus");
+                            }
+                        }
+                        // 如果历史中此 Option 不存在
+                        else
+                        {
+                            // 则在此 Option 添加一个新的关注点
+                            focusList.Add(new Focus(focusHolder.FocusInputField.text));
+                            Debug.Log("已在新 Option 中添加新的 Focus");
+                        }
+                    }
+                    option.Focuses = focusList;
+                    Debug.Log("option.Focuses.Count: " + option.Focuses.Count);
+                }
+
+            }
+            // 否则
+            else
+            {
+                // 清空样本空间中的样本点
+                subject.SampleSpace.SamplePoints.Clear();
+                // 清空各选项中的关注点
+                foreach (Option option in subject.Options)
+                    option.Focuses.Clear();
+
+                // 根据用户操作添加样本点
+                for (int i = 0; i < mFocusHolders.Count; i++)
+                {
+                    subject.SampleSpace.AddSamplePoint(mFocusHolders[i].FocusInputField.text, mFocusHolders[i].FocusSlider.value);
+
+                    Debug.Log("已添加：" + subject.SampleSpace.SamplePoints[i].Name + ": " + subject.SampleSpace.SamplePoints[i].Value);
+                }
+
+                // 为所有选项添加关注点
+                for (int i = 0; i < subject.Options.Count; i++)
+                {
+                    for (int j = 0; j < mFocusHolders.Count; j++)
+                    {
+                        subject.Options[i].AddFocus(mFocusHolders[j].FocusInputField.text);
+                    }
+                }
+            }
         }
 
         // 判断是否多个输入相同

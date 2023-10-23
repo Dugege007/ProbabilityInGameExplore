@@ -25,7 +25,6 @@ namespace ProbabilityTest
 
             HistoryBtnTemplete.Hide();
 
-            Global.ResetData();
             Load();
 
             NewSubjectBtn.onClick.AddListener(() =>
@@ -35,6 +34,7 @@ namespace ProbabilityTest
                 Global.ResetData();
 
                 CloseSelf();
+                Global.IsTemporarilySave.Value = false;
                 UIKit.OpenPanel<UIStartPanel>();
             });
         }

@@ -32,7 +32,20 @@ namespace ProbabilityTest
             NotificationOptionNull.Hide();
             NotificationOptionSame.Hide();
 
-            Subject subject = Global.Subject;
+            Global.IsTemporarilySave.RegisterWithInitValue(isTempSave =>
+            {
+                if (isTempSave)
+                {
+                    // 给 Global.Subject 赋值（暂存 Subject）
+                    TemporarilySaveSubject();
+                    Global.Subject.IsHistory = true;
+                    Global.HistorySubject = Global.Subject;
+                    CloseSelf();
+                    UIKit.OpenPanel<UIHomePanel>();
+                }
+
+            }).UnRegisterWhenGameObjectDestroyed(this);
+
             Subject historySubject = Global.HistorySubject;
 
             if (historySubject.IsHistory)
@@ -61,7 +74,7 @@ namespace ProbabilityTest
                 CreateOptionInputField();
             });
 
-            // 监听 下一步按钮
+            // 监听 下一步 按钮
             NextBtn.onClick.AddListener(() =>
             {
                 AudioKit.PlaySound(Sfx.CLICK);
@@ -100,38 +113,8 @@ namespace ProbabilityTest
                     }
                 }
 
-                // 给主题和样本空间名赋值
-                subject.Name = SubjectInputField.text;
-                subject.Description = DescriptionInputField.text;
-
-                if (historySubject.IsHistory)
-                {
-                    subject.Options.Clear();
-
-                    foreach (var inputField in mOptionInputFields)
-                    {
-                        if (historySubject.GetOptionByName(inputField.text) != null)
-                        {
-                            subject.Options.Add(historySubject.GetOptionByName(inputField.text));
-                        }
-                        else
-                        {
-                            subject.AddOption(inputField.text);
-                            Debug.Log("添加新 Option：" + inputField.text);
-                        }
-                    }
-                    Debug.Log("从历史记录中提取 Options");
-                }
-                else
-                {
-                    // 清空主题中的选项的数据
-                    Global.Subject.Options.Clear();
-                    // 在 Subject 中添加 Option
-                    foreach (var inputField in mOptionInputFields)
-                    {
-                        Global.Subject.AddOption(inputField.text);
-                    }
-                }
+                // 给 Global.Subject 赋值（暂存 Subject）
+                TemporarilySaveSubject();
 
                 CloseSelf();
                 // 打开关注点面板
@@ -186,6 +169,46 @@ namespace ProbabilityTest
                     });
                 })
                 .Show();
+        }
+
+        private void TemporarilySaveSubject()
+        {
+            Subject subject = Global.Subject;
+            Subject historySubject = Global.HistorySubject;
+
+            // 给主题和样本空间名赋值
+            subject.Name = SubjectInputField.text;
+            subject.Description = DescriptionInputField.text;
+
+            if (historySubject.IsHistory)
+            {
+                subject.Options.Clear();
+
+                foreach (var inputField in mOptionInputFields)
+                {
+                    if (historySubject.GetOptionByName(inputField.text) != null)
+                    {
+                        subject.Options.Add(historySubject.GetOptionByName(inputField.text));
+                    }
+                    else
+                    {
+                        subject.AddOption(inputField.text);
+                        Debug.Log("添加新 Option：" + inputField.text);
+                    }
+                }
+                Debug.Log("从历史记录中提取 Options");
+            }
+            else
+            {
+                // 清空主题中的选项的数据
+                Global.Subject.Options.Clear();
+                // 在 Subject 中添加 Option
+                foreach (var inputField in mOptionInputFields)
+                {
+                    Global.Subject.AddOption(inputField.text);
+                    Debug.Log("在 Subject 中添加 Option");
+                }
+            }
         }
 
         // 设置背景颜色
