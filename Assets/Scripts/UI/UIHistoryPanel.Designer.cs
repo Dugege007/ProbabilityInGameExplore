@@ -5,28 +5,34 @@ using QFramework;
 
 namespace ProbabilityTest
 {
-	// Generate Id:7f49f726-c3ff-4550-81d0-145da63d8c16
+	// Generate Id:c19c3792-ad5f-4851-8202-0bfdf98a959c
 	public partial class UIHistoryPanel
 	{
 		public const string Name = "UIHistoryPanel";
 		
 		[SerializeField]
+		public HistoryBtnTemplete HistoryBtnTemplete;
+		[SerializeField]
 		public RectTransform Content;
+		[SerializeField]
+		public UnityEngine.UI.Button ClearAllHistoryBtn;
 		[SerializeField]
 		public UnityEngine.UI.Button NewSubjectBtn;
 		[SerializeField]
-		public HistoryBtnTemplete HistoryBtnTemplete;
-		[SerializeField]
 		public NotificationOpenHistory NotificationOpenHistory;
+		[SerializeField]
+		public NotificationOpenHistory NotificationClearAllHistory;
 		
 		private UIHistoryPanelData mPrivateData = null;
 		
 		protected override void ClearUIComponents()
 		{
-			Content = null;
-			NewSubjectBtn = null;
 			HistoryBtnTemplete = null;
+			Content = null;
+			ClearAllHistoryBtn = null;
+			NewSubjectBtn = null;
 			NotificationOpenHistory = null;
+			NotificationClearAllHistory = null;
 			
 			mData = null;
 		}

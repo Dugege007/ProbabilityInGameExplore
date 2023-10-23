@@ -18,6 +18,11 @@ namespace QAssetBundle
         public const string SLIDERDOWN = "SliderDown";
         public const string SLIDERUP = "SliderUp";
     }
+    public class Uidefaultpanel_prefab
+    {
+        public const string BundleName = "uidefaultpanel_prefab";
+        public const string UIDEFAULTPANEL = "UIDefaultPanel";
+    }
     public class Uifocusespanel_prefab
     {
         public const string BundleName = "uifocusespanel_prefab";
@@ -42,6 +47,11 @@ namespace QAssetBundle
     {
         public const string BundleName = "uiresultpanel_prefab";
         public const string UIRESULTPANEL = "UIResultPanel";
+    }
+    public class Uisettingspanel_prefab
+    {
+        public const string BundleName = "uisettingspanel_prefab";
+        public const string UISETTINGSPANEL = "UISettingsPanel";
     }
     public class Uistartpanel_prefab
     {

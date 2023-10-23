@@ -17,6 +17,7 @@ namespace ProbabilityTest
     public partial class UIHistoryPanel : UIPanel, IController, ICanSave
     {
         private List<string> mSubjectFiles = new List<string>();
+        private List<HistoryBtnTemplete> mHistoryBtns = new List<HistoryBtnTemplete>(); 
 
         protected override void OnInit(IUIData uiData = null)
         {
@@ -25,6 +26,7 @@ namespace ProbabilityTest
 
             HistoryBtnTemplete.Hide();
             NotificationOpenHistory.Hide();
+            NotificationClearAllHistory.Hide();
 
             Load();
 
@@ -39,24 +41,46 @@ namespace ProbabilityTest
                 UIKit.OpenPanel<UIStartPanel>();
             });
 
-            NotificationOpenHistory.CloseBtn.onClick.AddListener(() =>
+            ClearAllHistoryBtn.onClick.AddListener(() =>
             {
-                NotificationOpenHistory.Hide();
+                NotificationClearAllHistory.Show();
             });
 
-            NotificationOpenHistory.CancelBtn.onClick.AddListener(() =>
+            NotificationClearAllHistory.CloseBtn.onClick.AddListener(() =>
             {
-                NotificationOpenHistory.Hide();
+                NotificationClearAllHistory.Hide();
             });
 
-            NotificationOpenHistory.YesBtn.onClick.AddListener(() =>
+            NotificationClearAllHistory.CancelBtn.onClick.AddListener(() =>
             {
-                Global.ResetData();
+                NotificationClearAllHistory.Hide();
+            });
 
+            NotificationClearAllHistory.YesBtn.onClick.AddListener(() =>
+            {
+                DeleteAllHistory();
                 CloseSelf();
-                Global.IsTemporarilySave.Value = false;
-                UIKit.OpenPanel<UIStartPanel>();
+                UIKit.OpenPanel<UIHomePanel>();
             });
+
+            //NotificationOpenHistory.CloseBtn.onClick.AddListener(() =>
+            //{
+            //    NotificationOpenHistory.Hide();
+            //});
+
+            //NotificationOpenHistory.CancelBtn.onClick.AddListener(() =>
+            //{
+            //    NotificationOpenHistory.Hide();
+            //});
+
+            //NotificationOpenHistory.YesBtn.onClick.AddListener(() =>
+            //{
+            //    Global.ResetData();
+
+            //    CloseSelf();
+            //    Global.IsTemporarilySave.Value = false;
+            //    UIKit.OpenPanel<UIStartPanel>();
+            //});
         }
 
         protected override void OnOpen(IUIData uiData = null)
@@ -83,6 +107,8 @@ namespace ProbabilityTest
                     descriptionStr.Append(historySubject.Description);
                     self.DescriptionText.text = descriptionStr.ToString();
 
+                    mHistoryBtns.Add(self);
+
                     self.GetComponent<Button>().onClick.AddListener(() =>
                     {
                         AudioKit.PlaySound(Sfx.CLICK);
@@ -104,11 +130,29 @@ namespace ProbabilityTest
         {
         }
 
-        private void DeleteHistory(List<string> needDeleteFiles)
+        private void DeleteAllHistory()
         {
-            foreach (string filePath in needDeleteFiles)
-            {
+            string subjectPath = Path.Combine(Application.persistentDataPath, "Subject/");
 
+            try
+            {
+                // 获取所有文件名
+                string[] subjectFiles = Directory.GetFiles(subjectPath);
+
+                if (subjectFiles.Length > 0)
+                {
+                    // 删除每个文件
+                    foreach (string file in subjectFiles)
+                    {
+                        Debug.Log("Deleting file: " + file);
+                        File.Delete(file);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                // 异常处理
+                Debug.Log("An error occurred: " + e.Message);
             }
         }
 

@@ -1,0 +1,31 @@
+ManifestFileVersion: 0
+CRC: 2166748790
+AssetBundleManifest:
+  AssetBundleInfos:
+    Info_0:
+      Name: uistartpanel_prefab
+      Dependencies: {}
+    Info_1:
+      Name: uifocusespanel_prefab
+      Dependencies: {}
+    Info_2:
+      Name: uiratingpanel_prefab
+      Dependencies: {}
+    Info_3:
+      Name: uiresultpanel_prefab
+      Dependencies: {}
+    Info_4:
+      Name: sfx
+      Dependencies: {}
+    Info_5:
+      Name: uihistorypanel_prefab
+      Dependencies: {}
+    Info_6:
+      Name: uihomepanel_prefab
+      Dependencies: {}
+    Info_7:
+      Name: uidefaultpanel_prefab
+      Dependencies: {}
+    Info_8:
+      Name: uisettingspanel_prefab
+      Dependencies: {}

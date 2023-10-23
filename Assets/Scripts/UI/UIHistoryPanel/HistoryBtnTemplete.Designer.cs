@@ -14,7 +14,7 @@ namespace ProbabilityTest
 		[SerializeField] public TMPro.TextMeshProUGUI SubjectTitle;
 		[SerializeField] public TMPro.TextMeshProUGUI DateText;
 		[SerializeField] public TMPro.TextMeshProUGUI DescriptionText;
-		[SerializeField] public UnityEngine.UI.Toggle RemoveBtn;
+		[SerializeField] public UnityEngine.UI.Toggle RemoveToggle;
 
 		public void Clear()
 		{
@@ -22,7 +22,7 @@ namespace ProbabilityTest
 			SubjectTitle = null;
 			DateText = null;
 			DescriptionText = null;
-			RemoveBtn = null;
+			RemoveToggle = null;
 		}
 
 		public override string ComponentName
