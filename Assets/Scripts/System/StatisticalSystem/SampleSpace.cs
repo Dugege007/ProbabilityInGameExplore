@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 namespace ProbabilityTest
 {
@@ -32,14 +33,14 @@ namespace ProbabilityTest
         /// 添加样本点
         /// </summary>
         /// <param name="samplePointName">样本点名称</param>
-        public void AddSamplePoint(string samplePointName)
+        public SamplePoint AddSamplePoint(string samplePointName)
         {
             if (CheckSamplePointExist(samplePointName))
             {
                 Debug.LogWarning("SamplePoint：" + samplePointName + " 已存在!");
-                return;
             }
 
+            SamplePoint samplePoint = new SamplePoint(samplePointName, 1f);
             switch (Mode)
             {
                 case CalMode.Percent:
@@ -47,7 +48,7 @@ namespace ProbabilityTest
                     break;
 
                 case CalMode.Weight:
-                    SamplePoint samplePoint = new SamplePoint(samplePointName, 1f);
+                    samplePoint = new SamplePoint(samplePointName, 1f);
                     SamplePoints.Add(samplePoint);
                     TotalWeight += 1f;
                     break;
@@ -56,6 +57,8 @@ namespace ProbabilityTest
                     Debug.LogWarning("添加失败！");
                     break;
             }
+
+            return samplePoint;
         }
 
         /// <summary>

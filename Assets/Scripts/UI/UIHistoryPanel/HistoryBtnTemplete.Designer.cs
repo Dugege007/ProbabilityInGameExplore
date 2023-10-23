@@ -13,16 +13,16 @@ namespace ProbabilityTest
 		[SerializeField] public UnityEngine.UI.Image Background;
 		[SerializeField] public TMPro.TextMeshProUGUI SubjectTitle;
 		[SerializeField] public TMPro.TextMeshProUGUI DateText;
-		[SerializeField] public TMPro.TextMeshProUGUI OptionsText;
-		[SerializeField] public TMPro.TextMeshProUGUI FocusesText;
+		[SerializeField] public TMPro.TextMeshProUGUI DescriptionText;
+		[SerializeField] public UnityEngine.UI.Toggle RemoveBtn;
 
 		public void Clear()
 		{
 			Background = null;
 			SubjectTitle = null;
 			DateText = null;
-			OptionsText = null;
-			FocusesText = null;
+			DescriptionText = null;
+			RemoveBtn = null;
 		}
 
 		public override string ComponentName

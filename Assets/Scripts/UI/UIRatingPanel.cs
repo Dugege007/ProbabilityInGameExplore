@@ -17,19 +17,24 @@ namespace ProbabilityTest
         private int mOptionIndex = 0;
         private string mOptionName = "";
 
-        private List<Option> mGlobalOptions = Global.Subject.Options;
-        private List<Slider> mRatingSliders = new List<Slider>();
+        private List<Option> mGlobalOptions = new List<Option>();
 
-        private List<RatingHolderTemplete> mRatingHolderTempletes = new List<RatingHolderTemplete>();
+        private List<RatingHolderTemplete> mRatingHolders = new List<RatingHolderTemplete>();
 
         protected override void OnInit(IUIData uiData = null)
         {
             mData = uiData as UIRatingPanelData ?? new UIRatingPanelData();
             // please add init code here
 
-            foreach (var option in Global.Subject.Options)
+            mGlobalOptions = Global.Subject.Options;
+
+            foreach (var option in mGlobalOptions)
             {
-                Debug.Log("Global.Subject.Options：" + option.Name);
+                Debug.Log("mGlobalOptions：" + option.Name);
+                foreach (var focus in option.Focuses)
+                {
+                    Debug.Log("focus：" + focus.Name);
+                }
             }
 
             RatingHolderTemplete.Hide();
@@ -123,8 +128,7 @@ namespace ProbabilityTest
                 RatingHolderTemplete.InstantiateWithParent(OptionRatingHolder)
                     .Self(self =>
                     {
-                        mRatingSliders.Add(self.RatingSlider);
-                        mRatingHolderTempletes.Add(self);
+                        mRatingHolders.Add(self);
 
                         self.RatingLabel.text = samplePoints[i].Name;
                         //Debug.Log(option.GetFocusByName(samplePoints[i].Name).Value);
@@ -148,9 +152,9 @@ namespace ProbabilityTest
             // 解锁选项
             option.IsUnLocked = true;
 
-            for (int i = 0; i < mRatingSliders.Count; i++)
+            for (int i = 0; i < mRatingHolders.Count; i++)
             {
-                option.Focuses[i].Value = mRatingSliders[i].value;
+                option.Focuses[i].Value = mRatingHolders[i].RatingSlider.value;
                 Debug.Log(option.Focuses[i].Name + " 得分：" + option.Focuses[i].Score);
             }
         }
@@ -161,22 +165,22 @@ namespace ProbabilityTest
             if (mGlobalOptions[mOptionIndex].IsUnLocked == false)
             {
                 // 重置滑动条和分数
-                for (int i = 0; i < mRatingSliders.Count; i++)
+                for (int i = 0; i < mRatingHolders.Count; i++)
                 {
-                    mRatingSliders[i].value = 1f;
+                    mRatingHolders[i].RatingSlider.value = 1f;
                     option.Focuses[i].Value = 1f;
                 }
             }
             else
             {
                 // 为滑动条赋值
-                for (int i = 0; i < mRatingSliders.Count; i++)
+                for (int i = 0; i < mRatingHolders.Count; i++)
                 {
-                    mRatingSliders[i].value = option.Focuses[i].Value;
+                    mRatingHolders[i].RatingSlider.value = option.Focuses[i].Value;
                 }
             }
 
-            foreach (var ratingHolder in mRatingHolderTempletes)
+            foreach (var ratingHolder in mRatingHolders)
                 ratingHolder.Bubble.Hide();
         }
 

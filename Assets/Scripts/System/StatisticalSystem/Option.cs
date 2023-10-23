@@ -42,10 +42,11 @@ namespace ProbabilityTest
             Focuses = new List<Focus>();
         }
 
-        public void AddFocus(string focusName)
+        public Focus AddFocus(string focusName)
         {
             Focus focus = new Focus(focusName);
             Focuses.Add(focus);
+            return focus;
         }
 
         public void RemoveOption(string focusName)

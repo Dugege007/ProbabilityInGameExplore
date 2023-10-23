@@ -37,8 +37,11 @@ namespace ProbabilityTest
 
             if (historySubject.IsHistory)
             {
+                DescriptionInputField.Select();
+                SubjectInputField.Select();
+                DescriptionInputField.text = historySubject.Description;
                 SubjectInputField.text = historySubject.Name;
-                Label.Hide();
+
                 foreach (Option option in historySubject.Options)
                 {
                     CreateOptionInputField(option.Name);
@@ -99,6 +102,7 @@ namespace ProbabilityTest
 
                 // 给主题和样本空间名赋值
                 subject.Name = SubjectInputField.text;
+                subject.Description = DescriptionInputField.text;
 
                 if (historySubject.IsHistory)
                 {

@@ -5,7 +5,7 @@ using QFramework;
 
 namespace ProbabilityTest
 {
-	// Generate Id:ffa63872-32c2-4c1a-8016-207070fb8a34
+	// Generate Id:e1dd3f5a-d3be-4907-a345-8c7f71eaac4e
 	public partial class UIStartPanel
 	{
 		public const string Name = "UIStartPanel";
@@ -17,9 +17,7 @@ namespace ProbabilityTest
 		[SerializeField]
 		public TMPro.TMP_InputField SubjectInputField;
 		[SerializeField]
-		public TMPro.TextMeshProUGUI Label;
-		[SerializeField]
-		public TMPro.TextMeshProUGUI Placeholder;
+		public TMPro.TMP_InputField DescriptionInputField;
 		[SerializeField]
 		public UnityEngine.UI.Button AddOptionBtn;
 		[SerializeField]
@@ -40,8 +38,7 @@ namespace ProbabilityTest
 			OptionInputFieldHolderTemplete = null;
 			Content = null;
 			SubjectInputField = null;
-			Label = null;
-			Placeholder = null;
+			DescriptionInputField = null;
 			AddOptionBtn = null;
 			NextBtn = null;
 			NotificationSubjectNull = null;

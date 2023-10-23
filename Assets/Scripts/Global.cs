@@ -34,7 +34,7 @@ namespace ProbabilityTest
         public static void ResetData()
         {
             Subject = new Subject();
+            HistorySubject = new Subject();
         }
-
     }
 }

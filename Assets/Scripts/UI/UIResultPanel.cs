@@ -81,16 +81,16 @@ namespace ProbabilityTest
                         // 对选项的 Focuses 按分数大小排序
                         var sortedFocuses = sortedOptions[i].Focuses.OrderByDescending(f => f.Score).ToList();
 
-                        for (int j = 0; j < sortedOptions[i].Focuses.Count; j++)
+                        foreach(Focus focus in sortedOptions[i].Focuses)
                         {
                             FocusScoreHolderTemplete.InstantiateWithParent(optionHolder)
                                 .Self(focusHolder =>
                                 {
                                     // 显示关注点得分
-                                    focusHolder.FocusScoreText.text = "<b>" + sortedFocuses[j].Name + "：" +
-                                        sortedFocuses[j].Score.ToString("F1") + "</b>" + " / " + sortedFocuses[j].MaxScore.ToString("F1");
+                                    focusHolder.FocusScoreText.text = "<b>" + focus.Name + "：" +
+                                        focus.Score.ToString("F1") + "</b>" + " / " + focus.MaxScore.ToString("F1");
                                     // 显示关注点百分比
-                                    focusHolder.FocusPercentText.text = (sortedFocuses[j].Percent * 100f).ToString("F1") + "%";
+                                    focusHolder.FocusPercentText.text = (focus.Percent * 100f).ToString("F1") + "%";
                                 })
                                 .Show();
                         }
